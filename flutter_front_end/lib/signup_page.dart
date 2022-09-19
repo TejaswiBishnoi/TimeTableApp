@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'google_signin_api.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -9,6 +10,9 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  Future signIn() async {
+    await GoogleSignInAPI.login();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,6 +47,7 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                   SizedBox(height: 10,),
                   Container(
+                    alignment: Alignment.topLeft,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       color: Colors.white,
@@ -50,8 +55,21 @@ class _SignupPageState extends State<SignupPage> {
                     width: 300,
                     height: 70,
                     child: TextButton(
-                      onPressed: (){},
-                      child: Image.asset('assets/google.png'),
+                      onPressed: signIn,
+                      child: Row(
+                          children:<Widget>[
+                           const SizedBox(width: 10,),
+                            Image.asset('assets/google.png'),
+                           const  SizedBox(width: 25,),
+                           const Text("Signin with Google",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
+
+                      ),
                     ),
                   ),
                   SizedBox(height: 20,),
@@ -77,4 +95,7 @@ class _SignupPageState extends State<SignupPage> {
       ),
     );
   }
+
+
 }
+
