@@ -50,6 +50,8 @@ namespace TestServer
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
 
