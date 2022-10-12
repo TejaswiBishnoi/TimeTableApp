@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'google_signin_api.dart';
+import 'signedin_page.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -10,9 +11,6 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  Future signIn() async {
-    await GoogleSignInAPI.login();
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,7 +93,23 @@ class _SignupPageState extends State<SignupPage> {
       ),
     );
   }
+  Future signIn() async {
+    final user = await GoogleSignInAPI.login();
 
+    if(user == null){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sign in failed')));
+    }
+    else{
+      final gauth = await user.authentication;
+      print('this is gauth :)///////////////////////////////////////////////////////////////////////////////////////////////');
+      print(gauth.idToken);
+      print('this is gauth token :)');
+      print(gauth.accessToken);
 
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => SignedInPage(user: user)
+    ));
+    }
+  }
 }
 
