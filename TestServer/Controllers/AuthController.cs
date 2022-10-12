@@ -11,7 +11,7 @@ namespace TestServer.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        public InstructorDTO instructor = new InstructorDTO("IITJMU0069", "Dr. XXX");
+        public InstructorDTO instructor = new InstructorDTO("IITJMU0084", "Dr. John Doe");
         public AuthController(IConfiguration configuration)
         {
             _configuration = configuration;
