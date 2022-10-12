@@ -1,0 +1,27 @@
+1. Find day schedule for a given instructor through his ID.
+
+2. To check room availability on a given day and time.
+
+	select * from room where room_code not in (Select room_code from occurence where (date_begin < $(date) AND date_end > $(date)) AND (day = $(day)) AND (($(t1) between time_begin and time_end) OR ($(t2) between time_begin and time_end) OR (t1 < time_begin AND t2 > time_end)));                                        
+
+3. Find weekly schedule for a given instructor.
+
+4. Find course data for any instructor.
+
+	Select * from course where course_code in (Select course_code instructor_of ON instructor_id = $(instructor));
+
+5. To List of rooms for a atleast of given capacity.
+
+	Select * from room where capacity > $(capacity)
+
+6. Find all the rooms for a particular section.
+
+	
+
+7. To add some extra non-course event for a teacher.
+	
+	Insert into event (name, is_course, ignore_holiday, owner) Value(?)
+
+8. To find all non course events for a teacher.
+
+	Select * from event where is_course = false and owner = $(teacher)
