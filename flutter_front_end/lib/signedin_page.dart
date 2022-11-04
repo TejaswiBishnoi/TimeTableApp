@@ -13,7 +13,7 @@ class SignedInPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
     appBar: AppBar(
-      title: Text(user.displayName!),
+      title: Text("${user.displayName!}'s Schedule  "),
       centerTitle: true,
       backgroundColor: Colors.black12,
       actions: [
