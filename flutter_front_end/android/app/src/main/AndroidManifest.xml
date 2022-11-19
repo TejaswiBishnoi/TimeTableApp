@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.flutter_front_end">
-   <application
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
         android:label="Time Table"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
@@ -32,3 +34,4 @@
             android:value="2" />
     </application>
 </manifest>
+
