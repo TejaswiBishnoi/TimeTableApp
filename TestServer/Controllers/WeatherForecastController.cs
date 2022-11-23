@@ -13,15 +13,17 @@ namespace TestServer.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        MyContext context;
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, MyContext ctxt)
         {
             _logger = logger;
+            context = ctxt;
         }
         [Authorize]
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+            Console.WriteLine("Ass");
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
@@ -29,6 +31,11 @@ namespace TestServer.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+        [HttpGet("Res")]
+        public string GetRes()
+        {
+            return context.Instructors.Where(s => s.name == "Shrey").Single().email_id;
         }
     }
 }

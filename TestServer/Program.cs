@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -11,9 +13,11 @@ namespace TestServer
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            var conf = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
+            string mySqlConnectionStr = conf.GetConnectionString("DefaultConnection");
             // Add services to the container.
-
+            builder.Services.AddCors();
+            builder.Services.AddDbContextPool<MyContext>(options => options.UseMySql(mySqlConnectionStr, ServerVersion.AutoDetect(mySqlConnectionStr)));
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -39,6 +43,7 @@ namespace TestServer
                     ValidateAudience = false
                 };
             });
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -47,7 +52,9 @@ namespace TestServer
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseCors(
+                options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()                
+                );
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
