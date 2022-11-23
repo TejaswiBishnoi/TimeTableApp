@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'google_signin_api.dart';
 import 'signup_page.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SignedInPage extends StatelessWidget {
-  final GoogleSignInAccount user;
+  final String? user;
   SignedInPage({
     Key? key,
     required this.user,
@@ -13,27 +14,29 @@ class SignedInPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
     appBar: AppBar(
-      title: Text("${user.displayName!}'s Schedule  "),
+      title: Text("'s Schedule  "),
       centerTitle: true,
-      backgroundColor: Colors.black12,
+      backgroundColor: Colors.black45,
       actions: [
         TextButton(
             onPressed: () async {
               await GoogleSignInAPI.logout();
-
+              final storage = new FlutterSecureStorage();
+              await storage.delete(key: 'token');
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => SignupPage(),
               ));
             },
             child: const Text('Logout',
               style: TextStyle(
-                  color: Colors.black
+                  color: Colors.white60
               ),
             ),
         )
       ],
     ),
     body: Container(
+      color: Colors.black26,
       child: PageView(
         children: [
           Column(

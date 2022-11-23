@@ -1,11 +1,8 @@
-import 'dart:convert';
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'google_signin_api.dart';
 import 'signedin_page.dart';
-import 'package:http/http.dart' as http;
-
+import 'token_authentication.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -16,6 +13,28 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   @override
+  final TokenAuth tauth = TokenAuth();
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero,()async {
+      print("&&&&&&&&&&&&&&&&&");
+
+      String? value = await tauth.storage.read(key: "token");
+      print("!!!!!!!!!!!!!!!!!");
+
+      String? user =  await tauth.storage.read(key: "user");
+      String s="";
+      if(user!=null){
+        s=user;
+      }
+      if(value!=null){
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => SignedInPage(user: user)
+        ));
+      }
+    });
+
+  }
   Widget build(BuildContext context) {
     return Scaffold(
 
@@ -99,8 +118,6 @@ class _SignupPageState extends State<SignupPage> {
   }
   Future signIn() async {
     final user = await GoogleSignInAPI.login();
-
-
     if(user == null){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sign in failed')));
     }
@@ -110,10 +127,9 @@ class _SignupPageState extends State<SignupPage> {
       print(gauth.idToken);
       print('this is gauth token :)');
       print(gauth.accessToken);
-      http.Response res = await http.get(Uri.parse('https://oauth2.googleapis.com/tokeninfo?id_token=${gauth.idToken}'));
-      print(res.body);
+     tauth.token_check(gauth,user.email);
     Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => SignedInPage(user: user)
+        builder: (context) => SignedInPage(user: user.email,)
     ));
     }
   }
