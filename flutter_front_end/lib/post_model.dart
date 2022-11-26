@@ -1,33 +1,31 @@
-import 'package:flutter/foundation.dart';
 
 class Events{
   final String start_time;
   final String end_time;
-  final String class_code;
+  final String room_code;
   final String course_name;
+  final String section;
 
   Events({
     required this.start_time,
     required this.end_time,
-    required this.class_code,
+    required this.room_code,
     required this.course_name,
+    required this.section,
   });
+  factory Events.fromJson(dynamic json){
+    print(json);
+    return Events(start_time: json['start_time'] as String, end_time: json['end_time'] as String, room_code: json['room_code'] as String,
+        course_name: json['course_name'] as String, section: json['section'] as String);
+  }
 }
 class Daily{
   List<Events>? event_list;
 
   Daily({
-    this.event_list = const <Events>[]
+    required this.event_list
   });
-
-}
-class Weekly{
-  List<Daily>? day_list;
-  Weekly({
-    this.day_list = const <Daily>[]
-  });
-
-  factory Weekly.fromJson(Map<String, dynamic> json){
-    return Weekly(day_list: json['day_list'] as List<Daily>);
+  factory Daily.fromJson(Map<String, dynamic> json){
+    return Daily(event_list: json['event_list'].map<Events>((dynamic json) => Events.fromJson(json)).toList());
   }
 }

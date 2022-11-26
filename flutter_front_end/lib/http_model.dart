@@ -1,19 +1,18 @@
 import 'dart:convert';
-import 'dart:html';
+import 'package:flutter/material.dart';
+
 import 'post_model.dart';
 import 'package:http/http.dart';
-import 'post_model.dart';
+
 
 class HttpService {
-  final Uri postUrl = "";
+  final String postUrl = "http://192.168.193.105:5143/Schedule/WeekT";
 
-  Future<List<Weekly>> getPosts() async {
-    Response res = await get(postUrl);
-
-    if(res.statusCode == 200){
+  Future<List<Daily>> getPosts() async {
+    Response res = await get(Uri.parse(postUrl));
+    if(res.statusCode == 200) {
       List<dynamic> body = jsonDecode(res.body);
-
-      List<Weekly> Week = body.map((dynamic item) => Weekly.fromJson(item) ).toList();
+      List<Daily> Week = body.map<Daily>((dynamic item) => Daily.fromJson(item)).toList();
       return Week;
     }
     else{

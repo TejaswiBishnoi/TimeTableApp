@@ -6,10 +6,8 @@ import 'dart:async';
 
 class TokenAuth{
     final storage = new FlutterSecureStorage();
-    Future token_check(GoogleSignInAuthentication token,String user) async {
-        print(token.idToken);
-        http.Response res = await http.get(Uri.parse('http://192.168.137.1:5143/Auth/login?acctoken=${token.idToken}'));
+    Future token_check(GoogleSignInAuthentication token) async {
+        http.Response res = await http.get(Uri.parse('http://192.168.193.105:5143/Auth/login?acctoken=${token.idToken}'));
         await storage.write(key: "token", value: res.body);
-        await storage.write(key: "user", value: user);
     }
 }
