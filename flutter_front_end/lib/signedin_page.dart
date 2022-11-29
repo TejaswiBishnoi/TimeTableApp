@@ -1,253 +1,96 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'google_signin_api.dart';
 import 'signup_page.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'http_model.dart';
+import 'post_model.dart';
 
 class SignedInPage extends StatelessWidget {
-  final GoogleSignInAccount user;
+  final HttpService httpService = HttpService();
+  final String? token;
+
   SignedInPage({
     Key? key,
-    required this.user,
+    required this.token,
+
 }) : super (key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
     appBar: AppBar(
-      title: Text("${user.displayName!}'s Schedule  "),
+      title: Text("'s Schedule  "),
       centerTitle: true,
-      backgroundColor: Colors.black12,
+      backgroundColor: Colors.black45,
       actions: [
         TextButton(
             onPressed: () async {
               await GoogleSignInAPI.logout();
-
+              final storage = new FlutterSecureStorage();
+              await storage.delete(key: 'token');
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => SignupPage(),
               ));
             },
             child: const Text('Logout',
               style: TextStyle(
-                  color: Colors.black
+                  color: Colors.white60
               ),
             ),
         )
       ],
     ),
-    body: Container(
-      child: PageView(
-        children: [
-          Column(
-            children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Wednusday  12/10/2022'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
+    body: FutureBuilder(future: httpService.getPosts(),
+    builder: (BuildContext context, AsyncSnapshot snapshot){
+      if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.data == null) {
+          return const Text('no data');
+        } else {
+          List<Daily>? week = snapshot.data;
 
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Slot A    Details'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
+          return PageView(
+            children: week!.map((Daily day) => ListView(
+              children: day.event_list != null ? day.event_list!.map((Events event) => Card(
+                child: SizedBox(
+                    width: 200,
+                    height: 100,
+                    child: Row(
+                  children: [
+                    SizedBox(width: 20.0,height: 0,),
+                    Text(event.start_time),
+                    SizedBox(width: 20.0,height: 0,),
+                    Text(event.course_name),
+                    SizedBox(width: 20.0,height: 0,),
+                    Text(event.section)
+                  ],
+                )),
+              )).toList() : [],
+            )).toList(),
+          );
+        }
+      } else if (snapshot.connectionState == ConnectionState.none) {
+        return const Text('Error'); // error
+      } else {
+        return Center(child: const CircularProgressIndicator()); // loading
+      }
 
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Slot B    Details'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
-
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Slot C    Details'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
-
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Slot D    Details'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
-            ],
-          ),
-
-
-          Column(
-            children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Thursday  13/10/2022'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
-
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Slot A    Details'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
-
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Slot B    Details'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
-
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Slot C    Details'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
-
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Slot D    Details'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
-            ],
-          ),
-
-
-
-          Column(
-            children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Friday  14/10/2022'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
-
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Slot A    Details'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
-
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Slot B    Details'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
-
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Slot C    Details'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
-
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Text('Slot D    Details'),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  ),
-                ),
-                margin: EdgeInsets.fromLTRB(10, 5, 10, 0),
-              ),
-            ],
-          ),
-        ],
-      ),
+        },
     ),
     );
   }
 }
+
+/*
+if(snapshot.hasData){
+         List<Daily>? week = snapshot.data;
+         return PageView(
+           children: week!.map((Daily day) => ListView(
+             children: day.event_list!.map((Events event) => ListTile(
+               title: Text(event.course_name),
+             )).toList(),
+           )).toList(),
+         );
+       }
+       else{
+         return const Center(child: CircularProgressIndicator());
+       }
+ */
