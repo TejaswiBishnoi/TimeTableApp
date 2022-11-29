@@ -46,11 +46,12 @@ namespace TestServer
 
             modelBuilder.Entity<Section>().Property(s => s.course_code).IsRequired();
             modelBuilder.Entity<Section>().Property(s => s.event_id).IsRequired();
+            modelBuilder.Entity<Section>().Property(s => s.name).IsRequired().HasDefaultValue("All");
 
             modelBuilder.Entity<Event>().Property(s =>s.event_id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Event>().Property(s => s.name).IsRequired();            
             modelBuilder.Entity<Event>().Property(s => s.is_course).IsRequired().HasDefaultValue(false);            
-            modelBuilder.Entity<Event>().Property(s => s.ignore_holiday).IsRequired().HasDefaultValue(false);            
+            modelBuilder.Entity<Event>().Property(s => s.ignore_holiday).IsRequired().HasDefaultValue(false);
             modelBuilder.Entity<Event>().Property(s => s.owner).IsRequired().HasDefaultValue("ProfX");
 
             modelBuilder.Entity<Occurence>().Property(s => s.occurence_id).ValueGeneratedOnAdd();

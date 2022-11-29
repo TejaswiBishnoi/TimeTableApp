@@ -48,6 +48,7 @@ namespace TestServer
         public string section_id { get; set; }
         public string course_code { get; set; }
         public int event_id { get; set; }
+        public string name { get; set; }
         public Course course { get; set; }
         public ICollection <Teaches> teaches { get; set; }
         public Event Event { get; set; }

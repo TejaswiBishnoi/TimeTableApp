@@ -29,7 +29,7 @@ namespace TestServer.Controllers
                 GoogleJsonWebSignature.Payload pld = await GoogleJsonWebSignature.ValidateAsync(acctoken);
                 Email = pld.Email;
             }
-            catch (GoogleApiException e)
+            catch (Exception e)
             {
                 Console.WriteLine("Invalid Token");
                 return Unauthorized("Invalid id Token");
