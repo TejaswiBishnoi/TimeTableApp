@@ -9,5 +9,9 @@ class TokenAuth{
     Future token_check(GoogleSignInAuthentication token) async {
         http.Response res = await http.get(Uri.parse('http://192.168.193.105:5143/Auth/login?acctoken=${token.idToken}'));
         await storage.write(key: "token", value: res.body);
+        final new_storage = new FlutterSecureStorage();
+        String? t = await new_storage.read(key: "token");
+        print("this is res");
+
     }
 }

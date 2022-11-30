@@ -22,7 +22,6 @@ class _SignupPageState extends State<SignupPage> {
 
       String? value = await tauth.storage.read(key: "token");
 
-      print("!!!!!!!!!!!!!!!!!");
 
       if(value!=null){
         Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -125,9 +124,11 @@ class _SignupPageState extends State<SignupPage> {
       print('this is gauth token :)');
       print(gauth.accessToken);
       tauth.token_check(gauth);
-      final storage = new FlutterSecureStorage();
       String? token = await tauth.storage.read(key: "token");
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      //await Future.delayed(const Duration(seconds: 10));
+
+      print(token);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => SignedInPage(token: token)
     ));
     }
