@@ -82,7 +82,7 @@ class _SignedInPageState extends State<SignedInPage> {
                       return Card(
                           child: InkWell(
                             onTap: (){Navigator.of(context).pushReplacement(MaterialPageRoute(
-                              builder: (context) => const EventDetails(),
+                              builder: (context) =>  EventDetails(occur_id: day.event_list![index].occur_id, event_id: day.event_list![index].event_id,token: token,),
                             ));
                               },
                             child: SizedBox(height: 80,child: Row(children: [
