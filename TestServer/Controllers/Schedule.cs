@@ -20,9 +20,14 @@ namespace TestServer.Controllers
         [HttpGet("Week")]
         public IActionResult GetWeek()
         {
+            Console.WriteLine(Request.Headers);
+            Console.WriteLine("{0} : OGG", DateTime.Now.ToShortTimeString());
+            Console.WriteLine(Response.Headers);
             string? Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             DateTime dt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-            DateTime dt2 = dt.AddDays(7);            
+            DateTime dt2 = dt.AddDays(7);
+
+            Dictionary<string, DateTime> ceq = new Dictionary<string, DateTime>();            
 
             Instructor iss = context.Instructors.Single(s => s.instructor_id == Id);
             context.Entry(iss).Collection(s => s.teaches).Query().Include(s => s.section).ThenInclude(s => s.Event).Load();
@@ -38,10 +43,11 @@ namespace TestServer.Controllers
             List<DailyDTO> daily = new List<DailyDTO>();
             for (int i = 0; i < 7; i++)
             {
+                ceq[dt.AddDays(i).DayOfWeek.ToString()] = dt.AddDays(i);
                 DailyDTO d = new DailyDTO();
-                d.event_list = new List<EventDTO>();
+                d.day = ((DayOfWeek)i).ToString();
                 if (!occurDic.ContainsKey((int)dt.DayOfWeek))
-                {                    
+                {                 
                     daily.Add(d);
                     continue;
                 }
@@ -58,9 +64,15 @@ namespace TestServer.Controllers
                     if (e.room_code == null) e.room_code = "";
                     d.event_list.Add(e);
                 }
+                d.event_list = d.event_list.OrderBy(s => s.start_time).ToList();                
                 daily.Add(d);
             }
-            
+            for (int i = 0; i < 7; i++)
+            {
+                daily[i].date = $"{ceq[daily[i].day].Day} {((MonthsDTO)(ceq[daily[i].day].Month - 1))} {ceq[daily[i].day].Year}";
+            }
+            daily.Sort((x, y) => DateTime.Compare(ceq[x.day], ceq[y.day]));
+            Console.WriteLine("{0} : OG", DateTime.Now.ToShortTimeString());
             return Ok(daily);
         }
         [HttpGet("WeekT")]
@@ -70,10 +82,11 @@ namespace TestServer.Controllers
             List<DailyDTO> daily = new List<DailyDTO>();
             EventDTO ev = new();
             ev.course_name = "Test";
+            Console.WriteLine(Request.Headers);
             ev.start_time = DateTime.Now.ToShortTimeString();
             ev.end_time = DateTime.Now.ToShortTimeString();
-            ev.section = "boob";
-            ev.room_code = "Dildo";
+            ev.section = "Book";
+            ev.room_code = "D-OI";
             dt.event_list = new List<EventDTO>();
             dt.event_list.Add(ev);
             dt.event_list.Add(ev);

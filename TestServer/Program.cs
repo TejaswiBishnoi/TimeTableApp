@@ -30,7 +30,7 @@ namespace TestServer
                     Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey
                 });
-
+                
                 options.OperationFilter<SecurityRequirementsOperationFilter>();
             });
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -42,6 +42,7 @@ namespace TestServer
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+                options.Events = AuthEventsHandler.Instance;
             });
             
             var app = builder.Build();

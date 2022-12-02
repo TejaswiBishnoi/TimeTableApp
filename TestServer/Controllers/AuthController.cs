@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Google.Apis.Auth;
 using Google;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TestServer.Controllers
 {
@@ -62,6 +63,20 @@ namespace TestServer.Controllers
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
+        }
+        [Authorize]
+        [HttpGet("details")]
+        public IActionResult UserDetails()
+        {
+            string? Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string? Name = User.FindFirst(ClaimTypes.Name)?.Value;
+            string? email = User.FindFirst(ClaimTypes.Email)?.Value;
+
+            if (Id == null || Name == null || email == null)
+            {
+                return NotFound();
+            }
+            return Ok(new {instrucor_id = Id, name = Name, email = email});
         }
     }
 }

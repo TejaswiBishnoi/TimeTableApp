@@ -11,6 +11,10 @@
 
     public class DailyDTO
     {
+        public DailyDTO()
+        {
+            event_list = new List<EventDTO>();
+        }
         public IList<EventDTO> event_list { get; set; }
         public string day { get; set; }
         public string date { get; set; }
