@@ -4,33 +4,49 @@ import 'post_model.dart';
 import 'event_model.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HttpService {
   final String postUrl = "http://192.168.137.1:5143/Schedule/Week";
   final String eventUrl = "http://192.168.137.1:5143/Schedule/EventDetails";
+
   dynamic dir;
+
   Future<void> getDir() async {
     dir = await getTemporaryDirectory();
   }
   Future<List<Daily>> getPosts(String? token) async {
     String filename = "user.json";
-    getDir();
+    if(dir==null){
+      await getDir();
+    }
     File file = File('${dir.path}/$filename');
-
+    final storage = const FlutterSecureStorage();
+    String? t = await storage.read(key: 'token');
+    token = t;
+    //print(t);
     if(file.existsSync()){
         print("loading from cache");
+        print(token);
+        //file.delete();
         var jsondata = file.readAsStringSync();
         Response res = Response(jsonDecode(jsondata), 200);
         print(res.body);
         List<dynamic> body = jsonDecode(res.body);
         List<Daily> Week = body.map<Daily>((dynamic item) => Daily.fromJson(item)).toList();
+
         return Week;
     }
     else{
       print("loading form api");
+      token = await storage.read(key: 'token');
+      print("no token =====$token");
       Response res = await get(Uri.parse(postUrl),headers: {"accesstoken":"bearer $token"});
-      file.writeAsString(jsonEncode(res.body),flush: true, mode: FileMode.write);
+      print(res.statusCode);
+
       if(res.statusCode == 200) {
+
+        file.writeAsString(jsonEncode(res.body),flush: true, mode: FileMode.write);
         List<dynamic> body = jsonDecode(res.body);
         List<Daily> Week = body.map<Daily>((dynamic item) => Daily.fromJson(item)).toList();
         return Week;
@@ -40,10 +56,9 @@ class HttpService {
       }
     }
   }
-  Future<eventDetails> getDetails(String? event_id, String? occur_id, String? token) async {
+  Future<eventDetails> getDetails(String? event_id, String? occur_id, String? token,String? id) async {
     print("event functino");
-    String filename = "event.json";
-    getDir();
+    String filename = "$id.json";
     File file = File('${dir.path}/$filename');
     if(file.existsSync()){
       print("loading from cache");

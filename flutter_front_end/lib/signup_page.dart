@@ -25,7 +25,7 @@ class _SignupPageState extends State<SignupPage> {
 
       if(value!=null){
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => SignedInPage(token: value)
+            builder: (context) => SignedInPage(token: value,)
         ));
       }
     });
@@ -122,7 +122,7 @@ class _SignupPageState extends State<SignupPage> {
       tauth.token_check(gauth);
       String? token = await tauth.storage.read(key: "token");
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => SignedInPage(token: token)
+        builder: (context) => SignedInPage(token: token,)
     ));
     }
   }

@@ -6,22 +6,26 @@ import 'event_model.dart';
 
 
 class EventDetails extends StatefulWidget {
+  final String? id;
   final String? occur_id;
   final String? event_id;
   final String? token;
-  const EventDetails({Key? key,required this.occur_id, required this.event_id, required this.token}) : super(key: key);
+  final HttpService httpService;
+  const EventDetails({Key? key,required this.occur_id, required this.event_id, required this.token, required this.id, required this.httpService}) : super(key: key);
 
   @override
-  State<EventDetails> createState() => _EventDetailsState(event_id: event_id,occur_id: occur_id,token: token);
+  State<EventDetails> createState() => _EventDetailsState(event_id: event_id,occur_id: occur_id,token: token, id: id,httpService: httpService);
 }
 
 class _EventDetailsState extends State<EventDetails> {
   @override
+  final String? id;
   final String? event_id;
   final String? occur_id;
   final String? token;
-  _EventDetailsState({required this.event_id,required this.occur_id,required this.token});
-  final HttpService httpService = HttpService();
+  final HttpService httpService;
+  _EventDetailsState({required this.event_id,required this.occur_id,required this.token, required this.id, required this.httpService});
+  //final HttpService httpService = HttpService();
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -31,20 +35,22 @@ class _EventDetailsState extends State<EventDetails> {
              // final storage = new FlutterSecureStorage();
               //String? token = await storage.read(key: "token");
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => SignedInPage(token: token),
+                builder: (context) => SignedInPage(token: token,),
               ));
+              //Navigator.pop(context);
             },
             child: const Icon(
-                Icons.arrow_back
+                Icons.arrow_back,
+              color: Colors.white,
             ),
           )
         ],
         title: Text("Class Details"),
         centerTitle: true,
-        backgroundColor: Colors.black45,
+        backgroundColor: Colors.blue,
 
       ),
-      body: FutureBuilder(future: httpService.getDetails(event_id, occur_id,token),
+      body: FutureBuilder(future: httpService.getDetails(event_id, occur_id,token, id),
       builder: (BuildContext context, AsyncSnapshot snapshot){
 
         if (snapshot.connectionState == ConnectionState.done){
@@ -53,37 +59,114 @@ class _EventDetailsState extends State<EventDetails> {
             return ListView(
               children: [
                 ListTile(
-                title: Text(event.eventType),
+                title: Row(
+                  children: [
+                    SizedBox(width: 30,),
+                    Text("Class Type :"),
+                    SizedBox(width: 50.0,),
+                    Text(event.eventType),
+                  ],
+                ),
               ),
                 ListTile(
-                  title: Text(event.department),
+                  title: Row(
+                    children: [
+                      SizedBox(width: 30,),
+                      Text("Department :"),
+                      SizedBox(width: 50.0,),
+                      Text(event.department),
+                    ],
+                  ),
                 ),
                 ListTile(
-                  title: Text(event.total_credits),
+                  title: Row(
+                    children: [
+                      SizedBox(width: 30,),
+                      Text("Total Credits :"),
+                      SizedBox(width: 50.0,),
+                      Text(event.total_credits),
+                    ],
+                  ),
                 ),
                 ListTile(
-                  title: Text(event.lecture_credits),
+                  title: Row(
+                    children: [
+                      SizedBox(width: 30,),
+                      Text("Lecture Credits :"),
+                      SizedBox(width: 50.0,),
+                      Text(event.lecture_credits),
+                    ],
+                  ),
                 ),
                 ListTile(
-                  title: Text(event.tutorial_credits),
+                  title: Row(
+                    children: [
+                      SizedBox(width: 30,),
+                      Text("Tutorial credits :"),
+                      SizedBox(width: 50.0,),
+                      Text(event.tutorial_credits),
+                    ],
+                  ),
                 ),
                 ListTile(
-                  title: Text(event.practical_credits),
+                  title: Row(
+                    children: [
+                      SizedBox(width: 30,),
+                      Text("Practical credits :"),
+                      SizedBox(width: 50.0,),
+                      Text(event.practical_credits),
+                    ],
+                  ),
                 ),
                 ListTile(
-                  title: Text(event.category),
+                  title: Row(
+                    children: [
+                      SizedBox(width: 30,),
+                      Text("Course Category :"),
+                      SizedBox(width: 50.0,),
+                      Text(event.category),
+                    ],
+                  ),
                 ),
                 ListTile(
-                  title: Text(event.next_day),
+                  title: Row(
+                    children: [
+                      SizedBox(width: 30,),
+                      Text("Next class day :"),
+                      SizedBox(width: 50.0,),
+                      Text(event.next_day),
+                    ],
+                  ),
                 ),
                 ListTile(
-                  title: Text(event.next_date),
+                  title: Row(
+                    children: [
+                      SizedBox(width: 30,),
+                      Text("Next date :"),
+                      SizedBox(width: 50.0,),
+                      Text(event.next_date),
+                    ],
+                  ),
                 ),
                 ListTile(
-                  title: Text(event.next_start_time),
+                  title: Row(
+                    children: [
+                      SizedBox(width: 30,),
+                      Text("Next start time :"),
+                      SizedBox(width: 50.0,),
+                      Text(event.next_start_time),
+                    ],
+                  ),
                 ),
                 ListTile(
-                  title: Text(event.next_start_time),
+                  title: Row(
+                    children: [
+                      SizedBox(width: 30,),
+                      Text("Next end time :"),
+                      SizedBox(width: 50.0,),
+                      Text(event.next_end_time),
+                    ],
+                  ),
                 ),
               ],
             );
