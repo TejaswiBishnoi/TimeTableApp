@@ -52,29 +52,31 @@ class _SignedInPageState extends State<SignedInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.white70,
         child: ListView(
           children: [
             SizedBox(height: 50,),
-           const  Text("Options",
-            textAlign: TextAlign.center,
-              textScaleFactor: 2,
-            ),
-            SizedBox(height: 50.0,),
+            const DrawerHeader(child: Text("Options",
+             textAlign: TextAlign.center,
+             textScaleFactor: 2,
+              ),
+           ),
             InkWell(
               onTap: (){
                Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => Calendar(),
                 ));
               },
-              child: Card(
-                color: Colors.white38,
-                child: SizedBox(
+              child: ListTile(
+                //color: Colors.white38,
+
+                title: SizedBox(
                   height: 40,
                   child: Row(
                     children: [
                       SizedBox(width: 100,),
                       Text("Calendar",
+                        textScaleFactor: 1.2,
                       ),
                     ],
                   ),
@@ -130,6 +132,7 @@ class _SignedInPageState extends State<SignedInPage> {
               child: CustomScrollView(
                 slivers: <Widget>[
                   SliverAppBar(
+                    automaticallyImplyLeading: false,
                     pinned: true,
                     expandedHeight: 130.0,
                     flexibleSpace: FlexibleSpaceBar(

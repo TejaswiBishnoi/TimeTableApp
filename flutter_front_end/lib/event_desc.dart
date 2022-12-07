@@ -29,22 +29,20 @@ class _EventDetailsState extends State<EventDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          TextButton(
-            onPressed: () async {
-             // final storage = new FlutterSecureStorage();
-              //String? token = await storage.read(key: "token");
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => SignedInPage(token: token,),
-              ));
-              //Navigator.pop(context);
-            },
-            child: const Icon(
-                Icons.arrow_back,
-              color: Colors.white,
-            ),
-          )
-        ],
+        leading: TextButton(
+          onPressed: () async {
+            // final storage = new FlutterSecureStorage();
+            //String? token = await storage.read(key: "token");
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => SignedInPage(token: token,),
+            ));
+            //Navigator.pop(context);
+          },
+          child: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+        ),
         title: Text("Class Details"),
         centerTitle: true,
         backgroundColor: Colors.blue,
