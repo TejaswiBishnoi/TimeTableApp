@@ -27,11 +27,11 @@ class HttpService {
     //print(t);
     if(file.existsSync()){
         print("loading from cache");
-        print(token);
+        //print(token);
         //file.delete();
         var jsondata = file.readAsStringSync();
         Response res = Response(jsonDecode(jsondata), 200);
-        print(res.body);
+        //print(res.body);
         List<dynamic> body = jsonDecode(res.body);
         List<Daily> Week = body.map<Daily>((dynamic item) => Daily.fromJson(item)).toList();
 
@@ -40,9 +40,9 @@ class HttpService {
     else{
       print("loading form api");
       token = await storage.read(key: 'token');
-      print("no token =====$token");
+      //print("no token =====$token");
       Response res = await get(Uri.parse(postUrl),headers: {"accesstoken":"bearer $token"});
-      print(res.statusCode);
+      //print(res.statusCode);
 
       if(res.statusCode == 200) {
 
@@ -57,19 +57,19 @@ class HttpService {
     }
   }
   Future<eventDetails> getDetails(String? event_id, String? occur_id, String? token,String? id) async {
-    print("event functino");
+    //print("event functino");
     String filename = "$id.json";
     File file = File('${dir.path}/$filename');
     if(file.existsSync()){
-      print("loading from cache");
+      //print("loading from cache");
       var jsondata = file.readAsStringSync();
       Response res = Response(jsonDecode(jsondata), 200);
-      print(res.body);
+      //print(res.body);
       dynamic body = jsonDecode(res.body);
      // print(body);
       //file.delete();
       eventDetails event = eventDetails.fromJson(body);
-      print(event.next_end_time);
+      //print(event.next_end_time);
       return event;
     }
     else{

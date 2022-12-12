@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_front_end/signedin_page.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'http_model.dart';
 import 'event_model.dart';
 
@@ -121,8 +120,11 @@ class _EventDetailsState extends State<EventDetails> {
                     children: [
                       SizedBox(width: 30,),
                       Text("Course Category :"),
-                      SizedBox(width: 50.0,),
-                      Text(event.category),
+                      SizedBox(width: 30.0,),
+                      Container(
+                        constraints: BoxConstraints(maxWidth: 100,),
+                          child: Text(event.category)
+                      ),
                     ],
                   ),
                 ),

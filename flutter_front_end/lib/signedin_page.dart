@@ -158,14 +158,20 @@ class _SignedInPageState extends State<SignedInPage> {
                                 builder: (context) =>  EventDetails(occur_id: day.event_list![index].occur_id, event_id: day.event_list![index].event_id,token: token,id: day.event_list![index].event_id,httpService: httpService,),
                               ));
                                 },
-                              child: SizedBox(height: 80,child: Row(children: [
-                                SizedBox(width: 20,),
-                                Text(day.event_list![index].start_time+' - '),
+                              child: SizedBox(height: 80,
+                                child: Row(children: [
+                                SizedBox(width: 10,),
+                                Text(day.event_list![index].start_time+' - ',
+                                ),
                                 Text(day.event_list![index].end_time),
                                 SizedBox(width: 40,),
-                                Text(day.event_list![index].course_name),
-                                SizedBox(width: 20,),
-                                Text(day.event_list![index].section),
+                                Container(
+                                  constraints: BoxConstraints(maxWidth: 150),
+                                  child: Text(day.event_list![index].course_name,
+                                  ),
+                                ),
+                                //SizedBox(width: 20,),
+                                //Text(day.event_list![index].section),
                               ],),),
                             ),
                         );
