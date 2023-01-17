@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'google_signin_api.dart';
 import 'signedin_page.dart';
 import 'token_authentication.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -18,14 +18,14 @@ class _SignupPageState extends State<SignupPage> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero,()async {
-      print("&&&&&&&&&&&&&&&&&");
+      //print("&&&&&&&&&&&&&&&&&");
 
       String? value = await tauth.storage.read(key: "token");
 
 
       if(value!=null){
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => SignedInPage(token: value)
+            builder: (context) => SignedInPage(token: value,)
         ));
       }
     });
@@ -119,17 +119,10 @@ class _SignupPageState extends State<SignupPage> {
     }
     else{
       final gauth = await user.authentication;
-      print('this is gauth :)///////////////////////////////////////////////////////////////////////////////////////////////');
-      print(gauth.idToken);
-      print('this is gauth token :)');
-      print(gauth.accessToken);
       tauth.token_check(gauth);
       String? token = await tauth.storage.read(key: "token");
-      //await Future.delayed(const Duration(seconds: 10));
-
-      print(token);
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => SignedInPage(token: token)
+        builder: (context) => SignedInPage(token: token,)
     ));
     }
   }

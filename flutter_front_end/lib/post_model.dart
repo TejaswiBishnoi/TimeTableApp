@@ -5,6 +5,8 @@ class Events{
   final String room_code;
   final String course_name;
   final String section;
+  final String event_id;
+  final String occur_id;
 
   Events({
     required this.start_time,
@@ -12,10 +14,14 @@ class Events{
     required this.room_code,
     required this.course_name,
     required this.section,
+    required this.event_id,
+    required this.occur_id,
   });
   factory Events.fromJson(dynamic json){
     return Events(start_time: json['start_time'] as String, end_time: json['end_time'] as String, room_code: json['room_code'] as String,
-        course_name: json['course_name'] as String, section: json['section'] as String);
+        course_name: json['course_name'] as String, section: json['section'] as String,
+    event_id: json['event_id'] as String,
+    occur_id: json['occurence_id'] as String,);
   }
 }
 class Daily{
