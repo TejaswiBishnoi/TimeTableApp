@@ -52,6 +52,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
     }
     signingConfigs {
         debug {
@@ -60,12 +61,18 @@ android {
             storeFile file('mykey.jks')
             storePassword 'timetable123'
         }
+        release {
+            keyAlias 'androiddebugkey'
+            keyPassword 'timetable123'
+            storeFile file('mykey.jks')
+            storePassword 'timetable123'
+        }
     }
     buildTypes {
-        debug {
+        release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -76,4 +83,5 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation 'com.android.support:multidex:2.0.1'
 }
