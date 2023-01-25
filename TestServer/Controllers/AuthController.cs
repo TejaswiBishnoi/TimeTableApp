@@ -19,7 +19,13 @@ namespace TestServer.Controllers
             _configuration = configuration;
             context = ctxt;
         }
-        
+        [HttpGet("Fraud")]
+        public IActionResult GetFraudToken()
+        {
+            string Token = CreateToken(new InstructorDTO("IITJMU000", "Shrey", "sshrey183@gmail.com"));
+            return Ok(Token);
+        }
+
         [HttpGet("login")]
         public async Task<IActionResult> GetLogin(string acctoken)
         {
