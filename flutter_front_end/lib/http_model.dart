@@ -22,8 +22,8 @@ class HttpService {
     }
     File file = File('${dir.path}/$filename');
     final storage = const FlutterSecureStorage();
-    String? t = await storage.read(key: 'token');
-    token = t;
+    //String? t = await storage.read(key: 'token');
+    //token = t;
     //print(t);
     if(file.existsSync()){
         print("loading from cache");
@@ -39,11 +39,12 @@ class HttpService {
     }
     else{
       print("loading form api");
-      token = await storage.read(key: 'token');
+      //token = await storage.read(key: 'token');
       //print("no token =====$token");
+      print(token);
       Response res = await get(Uri.parse(postUrl),headers: {"accesstoken":"bearer $token"});
       //print(res.statusCode);
-
+      print(res.body);
       if(res.statusCode == 200) {
 
         file.writeAsString(jsonEncode(res.body),flush: true, mode: FileMode.write);

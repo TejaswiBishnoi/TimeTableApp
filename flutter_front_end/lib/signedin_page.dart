@@ -24,15 +24,18 @@ class _SignedInPageState extends State<SignedInPage> {
   final storage = new FlutterSecureStorage();
   final HttpService httpService = HttpService();
   String? token;
-  void getToken() async {
+  Future getToken() async {
     token = await storage.read(key: 'token');
+    return token;
   }
   /*void initState(){
     getToken();
     print(token);
   }*/
   Future<List<Daily>> getData() async {
-    getToken();
+    await getToken();
+    //Future.delayed(const Duration(seconds: 2));
+    print(token);
     return httpService.getPosts(token);
   }
   //Future<List<Daily>>? future;
@@ -73,7 +76,7 @@ class _SignedInPageState extends State<SignedInPage> {
                 title: SizedBox(
                   height: 40,
                   child: Row(
-                    children: [
+                    children: const [
                       SizedBox(width: 100,),
                       Text("Calendar",
                         textScaleFactor: 1.2,
@@ -93,6 +96,7 @@ class _SignedInPageState extends State<SignedInPage> {
       actions: [
         IconButton(
             onPressed: () async {
+
               await GoogleSignInAPI.logout();
 
               httpService.dir.deleteSync(recursive: true);
@@ -107,7 +111,7 @@ class _SignedInPageState extends State<SignedInPage> {
         )
       ],
     ),
-    body: FutureBuilder(future: getData(),
+    body: FutureBuilder(future: Future.delayed(const Duration(milliseconds: 500),() => getData()),
     builder: (BuildContext context, AsyncSnapshot snapshot){
       if (snapshot.connectionState == ConnectionState.done) {
         if (snapshot.data == null) {
@@ -117,7 +121,7 @@ class _SignedInPageState extends State<SignedInPage> {
                   builder: (context) => StatefulBuilder(builder: (BuildContext context, setState) { return SignedInPage(token: token,); },)
               ));
             },
-                icon: Icon(Icons.refresh)),
+                icon: const Icon(Icons.refresh)),
           );
         } else {
           List<Daily>? week = snapshot.data;
