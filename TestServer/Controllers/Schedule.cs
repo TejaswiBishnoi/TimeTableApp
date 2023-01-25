@@ -46,21 +46,23 @@ namespace TestServer.Controllers
                 ceq[dt.AddDays(i).DayOfWeek.ToString()] = dt.AddDays(i);
                 DailyDTO d = new DailyDTO();
                 d.day = ((DayOfWeek)i).ToString();
-                if (!occurDic.ContainsKey((int)dt.DayOfWeek))
+                if (!occurDic.ContainsKey(i))
                 {                 
                     daily.Add(d);
                     continue;
                 }
-                foreach(Occurence oc in occurDic[(int)dt.DayOfWeek])
+                foreach(Occurence oc in occurDic[i])
                 {               
                     EventDTO e = new EventDTO();
                     Event ee = oc.event_;
                     context.Entry(ee.section).Reference(s => s.course).Load();
                     e.course_name = ee.section.course.course_name;
                     e.section = ee.section.name;
-                    e.start_time = oc.time_begin.ToString();
-                    e.end_time = oc.time_end.ToString();
+                    e.start_time = oc.time_begin.ToString().Substring(0,5);
+                    e.end_time = oc.time_end.ToString().Substring(0,5);
                     e.room_code = oc.room_code;
+                    e.occurence_id = oc.occurence_id.ToString();
+                    e.event_id = ee.event_id.ToString();
                     if (e.room_code == null) e.room_code = "";
                     d.event_list.Add(e);
                 }
@@ -75,6 +77,64 @@ namespace TestServer.Controllers
             Console.WriteLine("{0} : OG", DateTime.Now.ToShortTimeString());
             return Ok(daily);
         }
+
+        [HttpGet("EventDetails")]
+        [Authorize]
+        public IActionResult GetDetails(string eventID, string occurenceID)
+        {
+            Console.WriteLine("{0}: Rec", DateTime.Now.ToLongTimeString());
+            string? Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (Id == null) return BadRequest();
+            Event? e = context.Events.Where(s => s.event_id.ToString() == eventID).Include(s => s.section).ThenInclude(s => s.course).Include(s => s.occurences).FirstOrDefault();
+            Occurence? o = e.occurences.Where(s => s.occurence_id.ToString() == occurenceID).FirstOrDefault();
+            if (e == null || o == null) return BadRequest("No Event with event id: " + eventID);
+            DetailsDTO dto = new();
+            if (e.section is null) return BadRequest();
+            Course c = e.section.course;
+            dto.department = c.department;
+            dto.category = c.category;
+            dto.type = c.type;
+            dto.total_credits = c.total_credits.ToString();
+            dto.practical_credits = c.practical_credits.ToString();
+            dto.tutorial_credits = c.tutorial_credits.ToString();
+            dto.lecture_credits = c.lecture_credits.ToString();
+            //Known Bug - Today's date being taken instead of the schedule's
+            Occurence? nextoc;
+            DateTime dat = DateTime.Now;
+            nextoc = e.occurences.Where(s => s.day == o.day && s.time_begin >= o.time_end).OrderBy(s => s.time_begin).FirstOrDefault();
+            if (nextoc is null)
+            {
+                int dt = o.day;                
+                for (int i = 1; i < 7; i++)
+                {
+                    dt += 1;
+                    dt %= 7;
+                    nextoc = e.occurences.Where(s => s.day == dt).Where(s => s.date_end >= dat.AddDays(i) && s.date_start <= dat.AddDays(i)).OrderBy(s => s.time_begin).FirstOrDefault();
+                    if (nextoc is not null)
+                    {
+                        dat = dat.AddDays(i);
+                        break;
+                    }
+                }               
+            }
+            if (nextoc is null)
+            {
+                dto.next_date = "-";
+                dto.next_day = " ";
+                dto.next_start_time = "-";
+                dto.next_end_time = "-";
+            }
+            else
+            {
+                dto.next_day = ((DayOfWeek)nextoc.day).ToString();
+                dto.next_start_time = nextoc.time_begin.ToString();
+                dto.next_end_time = nextoc.time_end.ToString();
+                dto.next_date = $"{dat.Day} {(MonthsDTO)dat.Month - 1} {dat.Year}";
+            }
+            Console.WriteLine("{0}: Res", DateTime.Now.ToLongTimeString());
+            return Ok(dto);
+        }
+
         [HttpGet("WeekT")]
         public IActionResult GetScheduleData()
         {
