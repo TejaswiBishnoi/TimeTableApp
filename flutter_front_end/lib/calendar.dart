@@ -14,8 +14,10 @@ class Calendar extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(onPressed: () async {
           token = await storage.read(key: 'token');
+          DateTime datetime = DateTime.now();
+          String date = datetime.toString();
           Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => SignedInPage(token: token,),
+            builder: (context) => SignedInPage(token: token,date: date,),
           ));
         },
             icon: const Icon(Icons.arrow_back)),
@@ -24,7 +26,17 @@ class Calendar extends StatelessWidget {
         centerTitle: true,
 
       ),
-      body: CellCalendar(),
+      body: CellCalendar(
+          onCellTapped: (date) {
+            String newDate = date.toString();
+            
+            print("$date is tapped !");
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => SignedInPage(token: token,date: newDate,),
+            ));
+          }
+
+      ),
     );
   }
 }

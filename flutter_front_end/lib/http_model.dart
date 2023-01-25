@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HttpService {
-  final String postUrl = "http://192.168.137.1:5143/Schedule/Week";
+  final String postUrl = "http://192.168.137.1:5143/Schedule/Weekd";
   final String eventUrl = "http://192.168.137.1:5143/Schedule/EventDetails";
 
   dynamic dir;
@@ -15,7 +15,7 @@ class HttpService {
   Future<void> getDir() async {
     dir = await getTemporaryDirectory();
   }
-  Future<List<Daily>> getPosts(String? token) async {
+  Future<List<Daily>> getPosts(String? token, String date) async {
     String filename = "user.json";
     if(dir==null){
       await getDir();
@@ -25,7 +25,7 @@ class HttpService {
     //String? t = await storage.read(key: 'token');
     //token = t;
     //print(t);
-    if(file.existsSync()){
+    if(file.existsSync() && date==DateTime.now().toString()){
         print("loading from cache");
         //print(token);
         //file.delete();
@@ -39,15 +39,26 @@ class HttpService {
     }
     else{
       print("loading form api");
+      print(date);
+      String d1 = date.substring(0,4);
+      String d2 = date.substring(5,7);
+      String d3 = date.substring(8,10);
+
+      //var chars = date.split('');
+      //date = chars.reversed.join();
+      //print(date);
       //token = await storage.read(key: 'token');
       //print("no token =====$token");
       print(token);
-      Response res = await get(Uri.parse(postUrl),headers: {"accesstoken":"bearer $token"});
+      print(d3+d2+d1);
+      Response res = await get(Uri.parse(postUrl+'?date='+d3+'-'+d2+'-'+d1),headers: {"accesstoken":"bearer $token"});
       //print(res.statusCode);
       print(res.body);
       if(res.statusCode == 200) {
+        if(date == DateTime.now().toString()){
+          file.writeAsString(jsonEncode(res.body),flush: true, mode: FileMode.write);
+        }
 
-        file.writeAsString(jsonEncode(res.body),flush: true, mode: FileMode.write);
         List<dynamic> body = jsonDecode(res.body);
         List<Daily> Week = body.map<Daily>((dynamic item) => Daily.fromJson(item)).toList();
         return Week;

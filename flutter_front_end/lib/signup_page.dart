@@ -22,10 +22,11 @@ class _SignupPageState extends State<SignupPage> {
 
       String? value = await tauth.storage.read(key: "token");
 
-
+      DateTime currDate = DateTime.now();
+      String date = currDate.toString();
       if(value!=null){
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => SignedInPage(token: value,)
+            builder: (context) => SignedInPage(token: value,date: date,)
         ));
       }
     });
@@ -121,8 +122,10 @@ class _SignupPageState extends State<SignupPage> {
       final gauth = await user.authentication;
       tauth.token_check(gauth);
       String? token = await tauth.storage.read(key: "token");
+      DateTime datetime = DateTime.now();
+      String date = datetime.toString();
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => SignedInPage(token: token,)
+        builder: (context) => SignedInPage(token: token,date: date,)
     ));
     }
   }

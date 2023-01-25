@@ -9,25 +9,32 @@ import 'calendar.dart';
 
 class SignedInPage extends StatefulWidget {
  final String? token;
-
+ final String date;
   const SignedInPage({
     Key? key,
     required this.token,
-
+    required this.date,
 }) : super (key: key);
 
   @override
-  State<SignedInPage> createState() => _SignedInPageState();
+  State<SignedInPage> createState() => _SignedInPageState(date: date);
 }
 
 class _SignedInPageState extends State<SignedInPage> {
   final storage = new FlutterSecureStorage();
   final HttpService httpService = HttpService();
   String? token;
+  String date;
+
+  _SignedInPageState({
+    required this.date,
+}) ;
+
   Future getToken() async {
     token = await storage.read(key: 'token');
     return token;
   }
+
   /*void initState(){
     getToken();
     print(token);
@@ -36,7 +43,7 @@ class _SignedInPageState extends State<SignedInPage> {
     await getToken();
     //Future.delayed(const Duration(seconds: 2));
     print(token);
-    return httpService.getPosts(token);
+    return httpService.getPosts(token, date);
   }
   //Future<List<Daily>>? future;
  // _SignedInPageState({required this.token});
@@ -118,7 +125,7 @@ class _SignedInPageState extends State<SignedInPage> {
           return Center(
             child: IconButton(onPressed: (){
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => StatefulBuilder(builder: (BuildContext context, setState) { return SignedInPage(token: token,); },)
+                  builder: (context) => StatefulBuilder(builder: (BuildContext context, setState) { return SignedInPage(token: token, date: date,); },)
               ));
             },
                 icon: const Icon(Icons.refresh)),
@@ -130,7 +137,7 @@ class _SignedInPageState extends State<SignedInPage> {
             children: week!.map((Daily day) => RefreshIndicator(
               onRefresh: (){
                return Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => StatefulBuilder(builder: (BuildContext context, setState) { return SignedInPage(token: token,); },)
+                    builder: (context) => StatefulBuilder(builder: (BuildContext context, setState) { return SignedInPage(token: token,date: date,); },)
                 ));
               },
               child: CustomScrollView(
