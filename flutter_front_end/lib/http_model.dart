@@ -25,7 +25,7 @@ class HttpService {
     //String? t = await storage.read(key: 'token');
     //token = t;
     //print(t);
-    if(file.existsSync() && date==DateTime.now().toString()){
+    if(file.existsSync() && date.substring(0,10)==DateTime.now().toString().substring(0,10)){
         print("loading from cache");
         //print(token);
         //file.delete();
@@ -53,9 +53,10 @@ class HttpService {
       print(d3+d2+d1);
       Response res = await get(Uri.parse(postUrl+'?date='+d3+'-'+d2+'-'+d1),headers: {"accesstoken":"bearer $token"});
       //print(res.statusCode);
-      print(res.body);
+      print(date.substring(0,10));
+      print(DateTime.now().toString().substring(0,10));
       if(res.statusCode == 200) {
-        if(date == DateTime.now().toString()){
+        if(date.substring(0,10) == DateTime.now().toString().substring(0,10)){
           file.writeAsString(jsonEncode(res.body),flush: true, mode: FileMode.write);
         }
 
@@ -72,7 +73,7 @@ class HttpService {
     //print("event functino");
     String filename = "$id.json";
     File file = File('${dir.path}/$filename');
-    if(file.existsSync()){
+   /* if(file.existsSync()){
       //print("loading from cache");
       var jsondata = file.readAsStringSync();
       Response res = Response(jsonDecode(jsondata), 200);
@@ -84,7 +85,7 @@ class HttpService {
       //print(event.next_end_time);
       return event;
     }
-    else{
+    else{ */
       print("loading form api");
       String url = "$eventUrl?eventID=$event_id&occurenceID=$occur_id";
       Response res = await get(Uri.parse(url),headers: {"accesstoken": "$token"});
@@ -97,7 +98,7 @@ class HttpService {
       else{
         throw "Cant get schedule";
       }
-    }
+    //}
   }
 }
 

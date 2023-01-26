@@ -103,9 +103,9 @@ class _SignedInPageState extends State<SignedInPage> {
       actions: [
         IconButton(
             onPressed: () async {
-
+              print("here");
               await GoogleSignInAPI.logout();
-
+              print("reached here");
               httpService.dir.deleteSync(recursive: true);
               await storage.delete(key: 'token');
 
