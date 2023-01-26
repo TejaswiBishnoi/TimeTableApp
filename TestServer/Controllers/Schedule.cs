@@ -22,7 +22,7 @@ namespace TestServer.Controllers
         public IActionResult GetWeekFromDate(string date)
         {
             string? Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var DateArray = date.Split(':');
+            var DateArray = date.Split('-');
             DateTime dt = new DateTime(Convert.ToInt32(DateArray[2]), Convert.ToInt32(DateArray[1]), Convert.ToInt32(DateArray[0]));
             DateTime dt2 = dt.AddDays(7);
 

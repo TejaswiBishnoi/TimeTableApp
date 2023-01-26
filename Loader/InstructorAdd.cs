@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Loader.DB;
 
 namespace Loader
 {
@@ -21,8 +23,9 @@ namespace Loader
     internal class InstructorAdd
     {
         public static Dictionary<string, string> lis = new Dictionary<string, string>();
-        public static List<CourseTemp> lis_ = new();
+        public static List<CourseTemp> lis_ = new(); //Instructor ID -> Instructor Name;
         public static Dictionary<string, List<string>> isof = new();
+        public static timetable2Context tt = new();
         public static void ParseData(string data)
         {
             var x = data.Split(',').Select(s => s.Trim());
@@ -83,8 +86,19 @@ namespace Loader
             }
             foreach (var x in lis.OrderBy(x => x.Value))
             {
-                Console.WriteLine("{0} {1}", x.Key, x.Value);
+                if (!tt.Instructors.Any(y => y.InstructorId == x.Key))
+                {
+                    Instructor ins = new Instructor();
+                    ins.Name = x.Value;
+                    ins.InstructorId= x.Key;
+                    ins.EmailId = x.Key + "@iitjammu.ac.in";
+                    ins.Department = "";
+                    tt.Instructors.Add(ins);
+                    Console.WriteLine("Ins");
+                }
+                Console.WriteLine("{0} | {1}", x.Key, x.Value);
             }
+            tt.SaveChanges();
         }
         public static void addCourse()
         {
@@ -131,8 +145,25 @@ namespace Loader
             }
             foreach (var o in lis_)
             {
+                if (!tt.Courses.Any(x => x.CourseCode == o.Id))
+                {
+                    Course c = new Course();
+                    c.CourseCode = o.Id;
+                    c.CourseName = o.Name;
+                    c.LectureCredits = Convert.ToDecimal(o.lec);
+                    c.PracticalCredits = Convert.ToDecimal(o.prac);
+                    c.TutorialCredits = Convert.ToDecimal(o.tutor);
+                    c.TotalCredits = Convert.ToDecimal(o.total);
+                    c.Type = o.typ;
+                    c.Category = o.cat;
+                    c.CoordinatorId = o.coord;
+                    c.Department = "";
+                    tt.Courses.Add(c);
+                    Console.WriteLine("Ins");
+                }
                 Console.WriteLine("{0} | {1} | {2} | {3} | {4} | {5}", o.Id, o.Name, o.total, o.typ, o.cat, o.coord);
             }
+            tt.SaveChanges();
         }
         public static void addInstructorOf()
         {

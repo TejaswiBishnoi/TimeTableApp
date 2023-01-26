@@ -11,7 +11,7 @@ namespace Loader
     {
         public string CourseCode { get; set; }
         public string Name { get; set; }
-        public 
+        //public 
     }
     class TimeOccr
     {
