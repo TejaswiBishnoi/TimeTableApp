@@ -32,12 +32,12 @@ class _EventDetailsState extends State<EventDetails> {
           onPressed: () async {
             // final storage = new FlutterSecureStorage();
             //String? token = await storage.read(key: "token");
-            DateTime datetime = DateTime.now();
-            String date = datetime.toString();
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
+            //DateTime datetime = DateTime.now();
+            //String date = datetime.toString();
+            /*Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => SignedInPage(token: token,date: date,),
-            ));
-            //Navigator.pop(context);
+            ));*/
+            Navigator.of(context,rootNavigator: true).pop(context);
           },
           child: const Icon(
             Icons.arrow_back,

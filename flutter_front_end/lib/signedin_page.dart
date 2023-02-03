@@ -78,14 +78,53 @@ class _SignedInPageState extends State<SignedInPage> {
                 ));
               },
               child: ListTile(
-                //color: Colors.white38,
-
+                //color: Colors.white38
                 title: SizedBox(
                   height: 40,
                   child: Row(
                     children: const [
-                      SizedBox(width: 100,),
+                      SizedBox(width: 50,),
                       Text("Calendar",
+                        textScaleFactor: 1.2,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            InkWell(
+              onTap: <Future>(){
+                return _dialogBuilder(context, "rooms");
+              },
+              child: ListTile(
+                //color: Colors.white38
+                title: SizedBox(
+                  height: 40,
+                  child: Row(
+                    children: const [
+                      SizedBox(width: 50,),
+                      Text("Classroom info",
+                        textScaleFactor: 1.2,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            InkWell(
+              onTap: <Future>(){
+                return _dialogBuilder(context, "schedule");
+              },
+              child: ListTile(
+                //color: Colors.white38
+                title: SizedBox(
+                  height: 40,
+                  child: Row(
+                    children: const [
+                      SizedBox(width: 50,),
+                      Text("Faculty Schedule",
                         textScaleFactor: 1.2,
                       ),
                     ],
@@ -102,16 +141,19 @@ class _SignedInPageState extends State<SignedInPage> {
       backgroundColor: Colors.blue,
       actions: [
         IconButton(
-            onPressed: () async {
-              print("here");
-              await GoogleSignInAPI.logout();
-              print("reached here");
-              httpService.dir.deleteSync(recursive: true);
-              await storage.delete(key: 'token');
+            onPressed: (){
 
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
+              () async{
+                print("here");
+                await GoogleSignInAPI.logout();
+                print("reached here");
+                httpService.dir.deleteSync(recursive: true);
+                await storage.delete(key: 'token');
+              };
+              /*Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => SignupPage(),
-              ));
+              ));*/
+              Navigator.of(context,rootNavigator: true).pop(context);
             },
           icon: const Icon(Icons.logout),
 
@@ -205,8 +247,195 @@ class _SignedInPageState extends State<SignedInPage> {
     ),
     );
   }
+
+  Future<void> _dialogBuilder(BuildContext context, String type) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+
+        if(type == "rooms"){
+          return AlertDialog(
+            actions: <Widget>[
+              AutocompleteClass(val: 0,),
+
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.labelLarge,
+                ),
+                child: const Text('Search'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        }
+        return AlertDialog(
+          actions: <Widget>[
+            AutocompleteClass(val: 1,),
+
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Search'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+
+      },
+    );
+  }
 }
 
+
+class AutocompleteClass extends StatelessWidget {
+  const AutocompleteClass({super.key, required this.val});
+  final val;
+
+  static const List<String> classroom = <String>[
+    '01-AC-1-01',
+    '01-AC-1-03',
+    '01-AC-2-01',
+    '01-AC-2-03',
+    '01-AC-2-07',
+    '01-AC-2-08',
+    '01-AC-2-09',
+    '01-AC-2-10',
+    '01-AC-2-14',
+    '01-AC-2-15',
+    '01-AC-2-16',
+    '01-AC-2-19',
+    '01-AC-2-20',
+    '01-AC-2-21',
+    'C3I Lab-I',
+    'C3I Lab-II',
+    'C3I Lab-III'
+  ];
+
+  static const List<String> faculty = <String>[
+    'Manoj Singh Gaur',
+    'Pankaj Chauhan',
+    'Anup Shukla',
+    'Ashok Bera',
+    'Kushmanda Saurav',
+    'Subhas Samanta',
+    'Rahul Raghunath Salunkhe',
+    'Nitin Joshi',
+    'Karan Nathwani',
+    'Badri Narayan Subudhi',
+    'Sanat Kumar Tiwari',
+    'Samrat Rao',
+    'Ravikant Saini',
+    'Anand Kumar Subramaniyan',
+    'Rajendra Kumar Varma',
+    'Shivnath Mazumder',
+    'Tanmay Sarkar',
+    'Ajay Singh',
+    'Vinit Jakhetiya',
+    'Alok Kumar Saxena',
+    'Shiva S',
+    'Yamuna Prasad',
+    'Vijay Kumar Pal',
+    'Arvind Kumar Rajput',
+    'Goutam Dutta',
+    'Ankit Dubey',
+    'Durai Prabhakaran R T',
+    'Ajeet Kumar Sharma',
+    'Ajay Kumar',
+    'Sudhakar Modem',
+    'Gaurav Ashok Bhaduri',
+    'Kankat Ghosh',
+    'Gaurav Varshney',
+    'Sumit Kumar Pandey',
+    'Sameer Kumar Sarma Pachalla',
+    'Sahil Kalra',
+    'Surendra Beniwal',
+    'Sukanya Mondal',
+    'Rimen Jamatia',
+    'Joby Varghese',
+    'Satya Sekhar Bhogilla',
+    'Guru Brahamam Ramani',
+    'Sayantan Mandal',
+    'Saurabh Biswas',
+    'Subhasis Bhattacharjee',
+    'Shantanu Vijay Madge',
+    'Jayaramulu Kolleboyina',
+    'Venkata Sathish Akella',
+    'Ankur Bansal',
+    'Amlan Kumar Pal',
+    'Biswanath Chakraborty',
+    'Yogesh Madhukarrao Nimdeo',
+    'Dharitri Rath',
+    'Ravi Kumar Arun',
+    'Ambika Prasad Shah',
+    'Roshan Udaram Patil',
+    'Rahul Dattatraya Kitture',
+    'Manmohan Vashisth',
+    'Srishilan C',
+    'Ankit Tyagi',
+    'Rani Rohini',
+    'Riya Bhowmik',
+    'Rajiv Kumar',
+    'Divyesh Varade',
+    'Ashutosh Yadav',
+    'Pervaiz Fathima Khatoon M',
+    'Suman Banerjee',
+    'Navneet Kumar',
+    'Chembolu Vinay',
+    'Bhaskar Jyoti Neog',
+    'Pothukuchi Harish',
+    'Shaifu Gupta',
+    'Rajkumar V',
+    'Shanmugadas K P',
+    'Pratik Kumar',
+    'Suresh Roland Devasahayam',
+    'Suman Sarkar',
+    'Aditya Shankar Sandupatla',
+    'Maya Kini K',
+    'Srinivasan N',
+    'Vinay Sharma',
+    'Arvind Kumar',
+    'Prasun Halder',
+    'Sivakumar G',
+    'Pallippattu Krishnan Vijayan',
+    'Kannan Iyer',
+    'Anurag Misra',
+    'Rakesh Singhai',
+    'Anju Chadha',
+    'Harkeerat Kaur',
+    'Uma Shankar'
+  ];
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    List<String> _kOptions;
+    if(val==0){
+       _kOptions = classroom;
+    }
+    else{
+      _kOptions = faculty;
+    }
+    return Autocomplete<String>(
+      optionsBuilder: (TextEditingValue textEditingValue) {
+        if (textEditingValue.text == '') {
+          return const Iterable<String>.empty();
+        }
+        return _kOptions.where((String option) {
+          return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+        });
+      },
+      onSelected: (String selection) {
+
+      },
+    );
+  }
+}
 /*
 if(snapshot.hasData){
          List<Daily>? week = snapshot.data;

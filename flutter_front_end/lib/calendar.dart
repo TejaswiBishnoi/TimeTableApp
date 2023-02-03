@@ -12,13 +12,14 @@ class Calendar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () async {
-          token = await storage.read(key: 'token');
-          DateTime datetime = DateTime.now();
-          String date = datetime.toString();
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
+        leading: IconButton(onPressed: () {
+          //token = await storage.read(key: 'token');
+          //DateTime datetime = DateTime.now();
+          //String date = datetime.toString();
+          /*Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => SignedInPage(token: token,date: date,),
-          ));
+          )); */
+          Navigator.of(context,rootNavigator: true).pop(context);
         },
             icon: const Icon(Icons.arrow_back)),
         title: Text("Calendar"),
