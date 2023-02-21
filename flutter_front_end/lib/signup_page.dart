@@ -18,14 +18,15 @@ class _SignupPageState extends State<SignupPage> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero,()async {
-      //print("&&&&&&&&&&&&&&&&&");
+      print("&&&&&&&&&&&&&&&&&");
 
       String? value = await tauth.storage.read(key: "token");
-
+      print(value);
+      print("abc");
       DateTime currDate = DateTime.now();
       String date = currDate.toString();
       if(value!=null){
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
+        Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => SignedInPage(token: value,date: date,)
         ));
       }
@@ -124,7 +125,7 @@ class _SignupPageState extends State<SignupPage> {
       String? token = await tauth.storage.read(key: "token");
       DateTime datetime = DateTime.now();
       String date = datetime.toString();
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
+      Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => SignedInPage(token: token,date: date,)
     ));
     }

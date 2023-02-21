@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'http_model.dart';
 import 'post_model.dart';
 import 'calendar.dart';
+import 'classroom_info.dart';
 
 class SignedInPage extends StatefulWidget {
  final String? token;
@@ -25,6 +26,9 @@ class _SignedInPageState extends State<SignedInPage> {
   final HttpService httpService = HttpService();
   String? token;
   String date;
+
+  String selectedVal = "";
+
 
   _SignedInPageState({
     required this.date,
@@ -73,7 +77,7 @@ class _SignedInPageState extends State<SignedInPage> {
            ),
             InkWell(
               onTap: (){
-               Navigator.of(context).pushReplacement(MaterialPageRoute(
+               Navigator.of(context).push(MaterialPageRoute( // do not use pushReplacement
                   builder: (context) => Calendar(),
                 ));
               },
@@ -143,17 +147,22 @@ class _SignedInPageState extends State<SignedInPage> {
         IconButton(
             onPressed: (){
 
-              () async{
+            /*  () async{
                 print("here");
                 await GoogleSignInAPI.logout();
                 print("reached here");
                 httpService.dir.deleteSync(recursive: true);
                 await storage.delete(key: 'token');
-              };
+
+              }; */
               /*Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => SignupPage(),
               ));*/
-              Navigator.of(context,rootNavigator: true).pop(context);
+              //Navigator.of(context,rootNavigator: true).pop(context);
+              GoogleSignInAPI.logout();
+              storage.delete(key: 'token');
+              //Navigator.of(context,rootNavigator: true).pop(context);
+              Navigator.pop(context);
             },
           icon: const Icon(Icons.logout),
 
@@ -166,7 +175,7 @@ class _SignedInPageState extends State<SignedInPage> {
         if (snapshot.data == null) {
           return Center(
             child: IconButton(onPressed: (){
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
+              Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => StatefulBuilder(builder: (BuildContext context, setState) { return SignedInPage(token: token, date: date,); },)
               ));
             },
@@ -178,7 +187,7 @@ class _SignedInPageState extends State<SignedInPage> {
           return PageView(
             children: week!.map((Daily day) => RefreshIndicator(
               onRefresh: (){
-               return Navigator.of(context).pushReplacement(MaterialPageRoute(
+               return Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => StatefulBuilder(builder: (BuildContext context, setState) { return SignedInPage(token: token,date: date,); },)
                 ));
               },
@@ -207,7 +216,7 @@ class _SignedInPageState extends State<SignedInPage> {
                           (context, index) {
                         return Card(
                             child: InkWell(
-                              onTap: (){Navigator.of(context).pushReplacement(MaterialPageRoute(
+                              onTap: (){Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) =>  EventDetails(occur_id: day.event_list![index].occur_id, event_id: day.event_list![index].event_id,token: token,id: day.event_list![index].event_id,httpService: httpService,),
                               ));
                                 },
@@ -248,32 +257,184 @@ class _SignedInPageState extends State<SignedInPage> {
     );
   }
 
+
+
+
+
+
+  static const List<String> classroom = <String>[
+    '01-AC-1-01',
+    '01-AC-1-03',
+    '01-AC-2-01',
+    '01-AC-2-03',
+    '01-AC-2-07',
+    '01-AC-2-08',
+    '01-AC-2-09',
+    '01-AC-2-10',
+    '01-AC-2-14',
+    '01-AC-2-15',
+    '01-AC-2-16',
+    '01-AC-2-19',
+    '01-AC-2-20',
+    '01-AC-2-21',
+    'C3I Lab-I',
+    'C3I Lab-II',
+    'C3I Lab-III'
+  ];
+
+  static const List<String> faculty = <String>[
+    'Manoj Singh Gaur',
+    'Pankaj Chauhan',
+    'Anup Shukla',
+    'Ashok Bera',
+    'Kushmanda Saurav',
+    'Subhas Samanta',
+    'Rahul Raghunath Salunkhe',
+    'Nitin Joshi',
+    'Karan Nathwani',
+    'Badri Narayan Subudhi',
+    'Sanat Kumar Tiwari',
+    'Samrat Rao',
+    'Ravikant Saini',
+    'Anand Kumar Subramaniyan',
+    'Rajendra Kumar Varma',
+    'Shivnath Mazumder',
+    'Tanmay Sarkar',
+    'Ajay Singh',
+    'Vinit Jakhetiya',
+    'Alok Kumar Saxena',
+    'Shiva S',
+    'Yamuna Prasad',
+    'Vijay Kumar Pal',
+    'Arvind Kumar Rajput',
+    'Goutam Dutta',
+    'Ankit Dubey',
+    'Durai Prabhakaran R T',
+    'Ajeet Kumar Sharma',
+    'Ajay Kumar',
+    'Sudhakar Modem',
+    'Gaurav Ashok Bhaduri',
+    'Kankat Ghosh',
+    'Gaurav Varshney',
+    'Sumit Kumar Pandey',
+    'Sameer Kumar Sarma Pachalla',
+    'Sahil Kalra',
+    'Surendra Beniwal',
+    'Sukanya Mondal',
+    'Rimen Jamatia',
+    'Joby Varghese',
+    'Satya Sekhar Bhogilla',
+    'Guru Brahamam Ramani',
+    'Sayantan Mandal',
+    'Saurabh Biswas',
+    'Subhasis Bhattacharjee',
+    'Shantanu Vijay Madge',
+    'Jayaramulu Kolleboyina',
+    'Venkata Sathish Akella',
+    'Ankur Bansal',
+    'Amlan Kumar Pal',
+    'Biswanath Chakraborty',
+    'Yogesh Madhukarrao Nimdeo',
+    'Dharitri Rath',
+    'Ravi Kumar Arun',
+    'Ambika Prasad Shah',
+    'Roshan Udaram Patil',
+    'Rahul Dattatraya Kitture',
+    'Manmohan Vashisth',
+    'Srishilan C',
+    'Ankit Tyagi',
+    'Rani Rohini',
+    'Riya Bhowmik',
+    'Rajiv Kumar',
+    'Divyesh Varade',
+    'Ashutosh Yadav',
+    'Pervaiz Fathima Khatoon M',
+    'Suman Banerjee',
+    'Navneet Kumar',
+    'Chembolu Vinay',
+    'Bhaskar Jyoti Neog',
+    'Pothukuchi Harish',
+    'Shaifu Gupta',
+    'Rajkumar V',
+    'Shanmugadas K P',
+    'Pratik Kumar',
+    'Suresh Roland Devasahayam',
+    'Suman Sarkar',
+    'Aditya Shankar Sandupatla',
+    'Maya Kini K',
+    'Srinivasan N',
+    'Vinay Sharma',
+    'Arvind Kumar',
+    'Prasun Halder',
+    'Sivakumar G',
+    'Pallippattu Krishnan Vijayan',
+    'Kannan Iyer',
+    'Anurag Misra',
+    'Rakesh Singhai',
+    'Anju Chadha',
+    'Harkeerat Kaur',
+    'Uma Shankar'
+  ];
+
   Future<void> _dialogBuilder(BuildContext context, String type) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
-
         if(type == "rooms"){
+          List<String> _kOptions = classroom;
+          String classNo = "";
           return AlertDialog(
+            content: const Text("Enter Room No."),
             actions: <Widget>[
-              AutocompleteClass(val: 0,),
-
+              //AutocompleteClass(val: 0,),
+          Autocomplete<String>(
+              optionsBuilder: (TextEditingValue textEditingValue) {
+            if (textEditingValue.text == '') {
+              return const Iterable<String>.empty();
+            }
+            return _kOptions.where((String option) {
+              return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+            });
+          },
+        onSelected: (String selection) {
+            classNo = selection;
+        },
+        ),
               TextButton(
                 style: TextButton.styleFrom(
                   textStyle: Theme.of(context).textTheme.labelLarge,
                 ),
-                child: const Text('Search'),
+                child: const Text("Search"),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>  ClassInfo(classNo: classNo,),
+                  ));
+                  //Navigator.of(context).pop();
                 },
               ),
             ],
           );
         }
+        List<String> _kOptions = faculty;
+        String name = "";
         return AlertDialog(
+          content: const Text("Enter Faculty Name"),
           actions: <Widget>[
-            AutocompleteClass(val: 1,),
+            //AutocompleteClass(val: 1,),
 
+        Autocomplete<String>(
+            optionsBuilder: (TextEditingValue textEditingValue) {
+          if (textEditingValue.text == '') {
+            return const Iterable<String>.empty();
+          }
+          return _kOptions.where((String option) {
+            return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+          });
+        },
+        onSelected: (String selection) {
+              name = selection;
+        },
+        ),
             TextButton(
               style: TextButton.styleFrom(
                 textStyle: Theme.of(context).textTheme.labelLarge,
@@ -292,6 +453,7 @@ class _SignedInPageState extends State<SignedInPage> {
 }
 
 
+/*
 class AutocompleteClass extends StatelessWidget {
   const AutocompleteClass({super.key, required this.val});
   final val;
@@ -431,12 +593,11 @@ class AutocompleteClass extends StatelessWidget {
         });
       },
       onSelected: (String selection) {
-
       },
     );
   }
 }
-/*
+
 if(snapshot.hasData){
          List<Daily>? week = snapshot.data;
          return PageView(

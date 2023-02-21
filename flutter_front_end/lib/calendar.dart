@@ -19,7 +19,8 @@ class Calendar extends StatelessWidget {
           /*Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => SignedInPage(token: token,date: date,),
           )); */
-          Navigator.of(context,rootNavigator: true).pop(context);
+          //Navigator.of(context,rootNavigator: true).pop(context);
+          Navigator.pop(context);
         },
             icon: const Icon(Icons.arrow_back)),
         title: Text("Calendar"),
