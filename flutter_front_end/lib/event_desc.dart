@@ -37,7 +37,8 @@ class _EventDetailsState extends State<EventDetails> {
             /*Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => SignedInPage(token: token,date: date,),
             ));*/
-            Navigator.of(context,rootNavigator: true).pop(context);
+            //Navigator.of(context,rootNavigator: true).pop(context);
+            Navigator.pop(context);
           },
           child: const Icon(
             Icons.arrow_back,

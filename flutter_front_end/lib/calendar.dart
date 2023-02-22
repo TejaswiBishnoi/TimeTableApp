@@ -2,6 +2,7 @@ import 'package:cell_calendar/cell_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_front_end/signedin_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'new_week.dart';
 
 class Calendar extends StatelessWidget {
   final storage = new FlutterSecureStorage();
@@ -33,8 +34,8 @@ class Calendar extends StatelessWidget {
             String newDate = date.toString();
             
             print("$date is tapped !");
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => SignedInPage(token: token,date: newDate,),
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => NewWeek(token: token,date: newDate,),
             ));
           }
 

@@ -75,27 +75,7 @@ class _SignedInPageState extends State<SignedInPage> {
              textScaleFactor: 2,
               ),
            ),
-            InkWell(
-              onTap: (){
-               Navigator.of(context).push(MaterialPageRoute( // do not use pushReplacement
-                  builder: (context) => Calendar(),
-                ));
-              },
-              child: ListTile(
-                //color: Colors.white38
-                title: SizedBox(
-                  height: 40,
-                  child: Row(
-                    children: const [
-                      SizedBox(width: 50,),
-                      Text("Calendar",
-                        textScaleFactor: 1.2,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            
 
             InkWell(
               onTap: <Future>(){
@@ -175,9 +155,12 @@ class _SignedInPageState extends State<SignedInPage> {
         if (snapshot.data == null) {
           return Center(
             child: IconButton(onPressed: (){
-              Navigator.of(context).push(MaterialPageRoute(
+              /*Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => StatefulBuilder(builder: (BuildContext context, setState) { return SignedInPage(token: token, date: date,); },)
-              ));
+              )); */
+              setState(() {
+
+              });
             },
                 icon: const Icon(Icons.refresh)),
           );
@@ -187,7 +170,7 @@ class _SignedInPageState extends State<SignedInPage> {
           return PageView(
             children: week!.map((Daily day) => RefreshIndicator(
               onRefresh: (){
-               return Navigator.of(context).push(MaterialPageRoute(
+                return Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) => StatefulBuilder(builder: (BuildContext context, setState) { return SignedInPage(token: token,date: date,); },)
                 ));
               },
@@ -254,6 +237,14 @@ class _SignedInPageState extends State<SignedInPage> {
 
         },
     ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.of(context).push(MaterialPageRoute( // do not use pushReplacement
+            builder: (context) => Calendar(),
+          ));
+        },
+        child: Icon(Icons.calendar_month),
+      ),
     );
   }
 
@@ -407,7 +398,7 @@ class _SignedInPageState extends State<SignedInPage> {
                 child: const Text("Search"),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>  ClassInfo(classNo: classNo,),
+                    builder: (context) =>  ClassInfo(classNo: classNo, date: date,),
                   ));
                   //Navigator.of(context).pop();
                 },

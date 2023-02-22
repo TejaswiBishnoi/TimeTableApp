@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'post_model.dart';
 import 'event_model.dart';
+import 'class_model.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,12 +10,35 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class HttpService {
   final String postUrl = "http://192.168.137.1:5143/Schedule/Weekd";
   final String eventUrl = "http://192.168.137.1:5143/Schedule/EventDetails";
+  final String classUrl = "http://192.168.137.1:5143/Schedule/Cweek";
 
   dynamic dir;
 
   Future<void> getDir() async {
     dir = await getTemporaryDirectory();
   }
+
+
+  Future<List<DailyEvents>> getClassInfo(String? token, String date, String classNo) async {
+    String d1 = date.substring(0,4);
+    String d2 = date.substring(5,7);
+    String d3 = date.substring(8,10);
+    Response res = await get(Uri.parse(classUrl+'?date='+d3+'-'+d2+'-'+d1+"&code="+classNo),headers: {"accesstoken":"bearer $token"});
+    print(d3+d2+d1);
+    print(res.body);
+    if(res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body);
+      List<DailyEvents> Week = body.map<DailyEvents>((dynamic item) => DailyEvents.fromJson(item)).toList();
+      return Week;
+    }
+    else{
+      throw "Cant get schedule";
+    }
+  }
+
+
+
+
   Future<List<Daily>> getPosts(String? token, String date) async {
     String filename = "user.json";
     if(dir==null){
