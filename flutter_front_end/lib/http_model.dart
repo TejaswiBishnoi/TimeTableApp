@@ -39,17 +39,18 @@ class HttpService {
 
 
 
-  Future<List<Daily>> getPosts(String? token, String date) async {
+  Future<List<Daily>> getPosts(String? token, String date, String faculty) async {
     String filename = "user.json";
     if(dir==null){
       await getDir();
     }
     File file = File('${dir.path}/$filename');
-    final storage = const FlutterSecureStorage();
+    //final storage = const FlutterSecureStorage();
     //String? t = await storage.read(key: 'token');
     //token = t;
     //print(t);
-    if(file.existsSync() && date.substring(0,10)==DateTime.now().toString().substring(0,10)){
+    if(file.existsSync() && date.substring(0,10)==DateTime.now().toString().substring(0,10) && faculty==""){
+
         print("loading from cache");
         //print(token);
         //file.delete();
@@ -75,12 +76,12 @@ class HttpService {
       //print("no token =====$token");
       print(token);
       print(d3+d2+d1);
-      Response res = await get(Uri.parse(postUrl+'?date='+d3+'-'+d2+'-'+d1),headers: {"accesstoken":"bearer $token"});
+      Response res = await get(Uri.parse(postUrl+'?date='+d3+'-'+d2+'-'+d1+"&name=$faculty"),headers: {"accesstoken":"bearer $token"});
       //print(res.statusCode);
       print(date.substring(0,10));
       print(DateTime.now().toString().substring(0,10));
       if(res.statusCode == 200) {
-        if(date.substring(0,10) == DateTime.now().toString().substring(0,10)){
+        if(date.substring(0,10) == DateTime.now().toString().substring(0,10) && faculty==""){
           file.writeAsString(jsonEncode(res.body),flush: true, mode: FileMode.write);
         }
 

@@ -4,12 +4,13 @@ import 'google_signin_api.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'http_model.dart';
 import 'post_model.dart';
+import 'calendar.dart';
 
-class NewWeek extends StatefulWidget {
+class FacultySched extends StatefulWidget {
   final String? token;
   final String date;
   final String faculty;
-  const NewWeek({
+  const FacultySched({
     Key? key,
     required this.token,
     required this.date,
@@ -17,10 +18,10 @@ class NewWeek extends StatefulWidget {
   }) : super (key: key);
 
   @override
-  State<NewWeek> createState() => _NewWeek(date: date,faculty: faculty);
+  State<FacultySched> createState() => _FacultySched(date: date,faculty: faculty);
 }
 
-class _NewWeek extends State<NewWeek> {
+class _FacultySched extends State<FacultySched> {
   final storage = new FlutterSecureStorage();
   final HttpService httpService = HttpService();
   String? token;
@@ -30,7 +31,7 @@ class _NewWeek extends State<NewWeek> {
   String selectedVal = "";
 
 
-  _NewWeek({
+  _FacultySched({
     required this.date,
     required this.faculty,
   }) ;
@@ -47,7 +48,6 @@ class _NewWeek extends State<NewWeek> {
   Future<List<Daily>> getData() async {
     await getToken();
     //Future.delayed(const Duration(seconds: 2));
-    print(token);
     return httpService.getPosts(token, date, faculty);
   }
   //Future<List<Daily>>? future;
@@ -99,7 +99,7 @@ class _NewWeek extends State<NewWeek> {
                 children: week!.map((Daily day) => RefreshIndicator(
                   onRefresh: (){
                     return Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => StatefulBuilder(builder: (BuildContext context, setState) { return NewWeek(token: token,date: date,faculty: faculty,); },)
+                        builder: (context) => StatefulBuilder(builder: (BuildContext context, setState) { return FacultySched(token: token,date: date,faculty: faculty,); },)
                     ));
                   },
                   child: CustomScrollView(
@@ -164,6 +164,14 @@ class _NewWeek extends State<NewWeek> {
           }
 
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.of(context).push(MaterialPageRoute( // do not use pushReplacement
+            builder: (context) => Calendar(faculty: faculty,),
+          ));
+        },
+        child: Icon(Icons.calendar_month),
       ),
     );
   }

@@ -66,26 +66,73 @@ class _ClassInfoState extends State<ClassInfo> {
             else{
               List<DailyEvents>? week = snapshot.data;
               return PageView(
-                children: week!.map((DailyEvents day) => ListView.builder(
-                  itemCount: day.event_list!.length,
+                children: week!.map((DailyEvents day) => CustomScrollView(
+                  slivers: <Widget>[
+                    SliverAppBar(
+                      automaticallyImplyLeading: false,
+                      pinned: true,
+                      expandedHeight: 130.0,
+                      flexibleSpace: FlexibleSpaceBar(
+                          title: Text("${day.day}\n${day.date}", textScaleFactor: 0.8,)
+                      ),
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                          (context,index) {
+                            return SizedBox(
+                              height: 100,
+                              child: Card(
+                                child: Row(
+                                  children: [
+                                    const SizedBox(width: 20,),
+                                    Text(day.event_list![index].start_time),
+                                    const SizedBox(width: 20,),
+                                    Text(day.event_list![index].end_time),
+                                    const SizedBox(width: 20,),
+                                    Text(day.event_list![index].faculty)
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        childCount: day.event_list!.length,
+                      ),
+                    ),
+                  ],
+                ),
+                  /* ListView.builder(
+                  itemCount: day.event_list!.length+1,
                   itemBuilder: (BuildContext context, int index){
+                    if(index==0){
+                      return SizedBox(
+                        height: 150,
+                        child: Card(
+                          color: Colors.blue,
+                          child: Text("${day.day}\n${day.date}",
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                          ),
+                        ) ,
+                      );
+                    }
                     return SizedBox(
                       height: 100,
                       child: Card(
                         child: Row(
                           children: [
                             const SizedBox(width: 20,),
-                            Text(day.event_list![index].start_time),
+                            Text(day.event_list![index-1].start_time),
                             const SizedBox(width: 20,),
-                            Text(day.event_list![index].end_time),
+                            Text(day.event_list![index-1].end_time),
                             const SizedBox(width: 20,),
-                            Text(day.event_list![index].faculty)
+                            Text(day.event_list![index-1].faculty)
                           ],
                         ),
                       ),
                     );
                   },
-                ),
+                ), */
               ).toList());
             }
           }

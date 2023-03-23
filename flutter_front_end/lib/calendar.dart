@@ -7,6 +7,8 @@ import 'new_week.dart';
 class Calendar extends StatelessWidget {
   final storage = new FlutterSecureStorage();
   String? token;
+  String faculty;
+  Calendar({required this.faculty});
 
 
   @override
@@ -35,7 +37,7 @@ class Calendar extends StatelessWidget {
             
             print("$date is tapped !");
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => NewWeek(token: token,date: newDate,),
+              builder: (context) => NewWeek(token: token,date: newDate,faculty: faculty,),
             ));
           }
 

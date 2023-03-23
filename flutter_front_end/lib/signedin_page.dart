@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_front_end/event_desc.dart';
+import 'package:flutter_front_end/select_faculty.dart';
 import 'google_signin_api.dart';
 import 'signup_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -7,6 +8,8 @@ import 'http_model.dart';
 import 'post_model.dart';
 import 'calendar.dart';
 import 'classroom_info.dart';
+import 'faculty_schedule.dart';
+import 'select_faculty.dart';
 
 class SignedInPage extends StatefulWidget {
  final String? token;
@@ -47,7 +50,7 @@ class _SignedInPageState extends State<SignedInPage> {
     await getToken();
     //Future.delayed(const Duration(seconds: 2));
     print(token);
-    return httpService.getPosts(token, date);
+    return httpService.getPosts(token, date, "");
   }
   //Future<List<Daily>>? future;
  // _SignedInPageState({required this.token});
@@ -109,6 +112,27 @@ class _SignedInPageState extends State<SignedInPage> {
                     children: const [
                       SizedBox(width: 50,),
                       Text("Faculty Schedule",
+                        textScaleFactor: 1.2,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            InkWell(
+              onTap: <Future>(){
+                Navigator.of(context).push(MaterialPageRoute( // do not use pushReplacement
+                    builder: (context) => SelectFaculty()));
+              },
+              child: ListTile(
+                //color: Colors.white38
+                title: SizedBox(
+                  height: 40,
+                  child: Row(
+                    children: const [
+                      SizedBox(width: 50,),
+                      Text("Common Slot",
                         textScaleFactor: 1.2,
                       ),
                     ],
@@ -240,7 +264,7 @@ class _SignedInPageState extends State<SignedInPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           Navigator.of(context).push(MaterialPageRoute( // do not use pushReplacement
-            builder: (context) => Calendar(),
+            builder: (context) => Calendar(faculty: "",),
           ));
         },
         child: Icon(Icons.calendar_month),
@@ -432,7 +456,10 @@ class _SignedInPageState extends State<SignedInPage> {
               ),
               child: const Text('Search'),
               onPressed: () {
-                Navigator.of(context).pop();
+               // Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>  FacultySched(faculty: name, date: date, token: token,),
+                ));
               },
             ),
           ],
