@@ -14,6 +14,9 @@ class SelectFaculty extends StatefulWidget {
 class _SelectFacultyState extends State<SelectFaculty> {
   @override
   List<String> facultyName = [];
+  // bool textPresent=false;
+  List<String> selectedFacutly = [];
+  Map<String,bool> facultyMap = {};
   int listLength = 0;
   int selectionCount = 0;
   String selection = "Select Faculty Members";
@@ -26,6 +29,9 @@ class _SelectFacultyState extends State<SelectFaculty> {
 
   @override
   void initState() {
+    faculty.map((name){
+      facultyMap[name]=false;
+    }).toList();
     facultyName = faculty;
     listLength = faculty.length;
     super.initState();
@@ -35,91 +41,149 @@ class _SelectFacultyState extends State<SelectFaculty> {
     //List<String> facultyName = faculty;
     //int listLength= faculty.length;
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(onPressed: () {
-          Navigator.pop(context);
-        },
-            icon: const Icon(Icons.arrow_back)),
-        title: Text(selection),
-        backgroundColor: Colors.blue,
-        centerTitle: true,
-        actions: [
-          Visibility(
-            visible: visibility,
-            child: IconButton(
-              onPressed: (){
-                _dialogBuilder(context);
-              },
-              icon: const Icon(Icons.search),
-            ),
-          ),
-
-          const SizedBox(width: 20),
-        ],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            margin: const EdgeInsets.fromLTRB(15, 0, 28, 15),
-            child: TextField(
-              decoration: const InputDecoration(
-                label: Text('Search Faculty Name',textScaleFactor: 0.8,),
+        appBar: AppBar(
+          leading: IconButton(onPressed: () {
+            Navigator.pop(context);
+          },
+              icon: const Icon(Icons.arrow_back)),
+          title: Text(selection),
+          backgroundColor: Colors.blue,
+          centerTitle: true,
+          actions: [
+            Visibility(
+              visible: visibility,
+              child: IconButton(
+                onPressed: (){
+                  _dialogBuilder(context);
+                },
+                icon: const Icon(Icons.search),
               ),
-              onChanged: (String text){
-                  if(text.isEmpty){
-                    facultyName = faculty;
-                    listLength = faculty.length;
-                  }
-                  else {
-                    print("i am here");
-                    final List<String> filteredFacultyNames = [];
-                    faculty.map((name) {
-                      if (name.toLowerCase().contains(text.toLowerCase())) {
+            ),
+
+            const SizedBox(width: 20),
+          ],
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              margin: const EdgeInsets.fromLTRB(15, 0, 28, 15),
+              child: TextField(
+                decoration: const InputDecoration(
+                  label: Text('Search Faculty Name',textScaleFactor: 0.8,),
+                ),
+                onChanged: (String text){
+                  final List<String> filteredFacultyNames = [];
+                  // int i=0;
+                  faculty.map((name) {
+                    // i++;
+                    if (name.toLowerCase().contains(text.toLowerCase())) {
+                      if(facultyMap[name]!){
+                        filteredFacultyNames.insert(0,name);
+                      }
+                      else{
                         filteredFacultyNames.add(name);
                       }
-                    }).toList();
-                    setState(() {
-                      facultyName=filteredFacultyNames;
-                      listLength=filteredFacultyNames.length;
-                    });
-                  }
-              },
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: ListView.builder(itemCount: listLength ,itemBuilder: (context,index){
-              return CheckboxListTile(
-              title: Text(facultyName[index]),
-              subtitle: const Text('computer science & engineering'),
-              autofocus: false,
-              activeColor: Colors.blue,
-              checkColor: Colors.white,
-              selected: _value[index],
-              dense: true,
-              value: _value[index],
-              onChanged: (bool? value) {
-              bool val;
-              if(value==null){
-              val=false;
-              }
-              else{
-              val= value;
-              }
-              setState((){
-                selectionCount+= (val==true) ? 1:-1;
-                selection = selectionCount!=0 ? "Selected $selectionCount" : "Select Faculty Members";
-                _value[index] = val;
-                visibility = selectionCount>0 ? true : false;
-              });
+                    }
+                  }).toList();
+                  setState(() {
+                    facultyName=filteredFacultyNames;
+                    listLength=filteredFacultyNames.length;
 
-              },
-              );
-            }),
-          ),
-        ],
-      )
+                  });
+                  // if(text.isEmpty){
+                  //   // textPresent=false;
+                  //
+                  //   facultyName = faculty;
+                  //   listLength = faculty.length;
+                  // }
+                  // else {
+                  //   // textPresent=true;
+                  //   final List<String> filteredFacultyNames = [];
+                  //   // int i=0;
+                  //   faculty.map((name) {
+                  //     // i++;
+                  //     if (name.toLowerCase().contains(text.toLowerCase())) {
+                  //       if(facultyMap[name]!){
+                  //         filteredFacultyNames.insert(0,name);
+                  //       }
+                  //       else{
+                  //         filteredFacultyNames.add(name);
+                  //       }
+                  //     }
+                  //   }).toList();
+                  //   setState(() {
+                  //     facultyName=filteredFacultyNames;
+                  //     listLength=filteredFacultyNames.length;
+                  //
+                  //   });
+                  // }
+                },
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: ListView.builder(itemCount: listLength ,itemBuilder: (context,index){
+                return CheckboxListTile(
+                  title: Text(facultyName[index]),
+                  subtitle: const Text('computer science & engineering'),
+                  autofocus: false,
+                  activeColor: Colors.blue,
+                  checkColor: Colors.white,
+                  selected: facultyMap[facultyName[index]]!,//_value[index],
+                  dense: true,
+                  value: facultyMap[facultyName[index]]!,//_value[index],
+                  onChanged: (bool? value) {
+                    bool val;
+                    if(value==null){
+                      val=false;
+                    }
+                    else{
+                      val= value;
+                    }
+                    setState((){
+                      selectionCount+= (val==true) ? 1:-1;
+                      selection = selectionCount!=0 ? "Selected $selectionCount" : "Select Faculty Members";
+                      visibility = selectionCount>0 ? true : false;
+                      facultyMap[facultyName[index]] = val;
+
+
+                      List<String> sortedFaculty = [];
+                      facultyName.map((name){
+                        if(facultyMap[name]!){
+                          sortedFaculty.insert(0, name);
+                        }
+                        else{
+                          sortedFaculty.add(name);
+                        }
+                      }).toList();
+                      facultyName = sortedFaculty;
+
+                        // if(val==true){
+                        //   facultyMap[facultyName[index]] = true;
+                        //   facultyName.insert(selectionCount-1,facultyName[index]);
+                        //   facultyName.removeAt(index+1);
+                        //   // _value[selectionCount-1]=true;
+                        //
+                        //   //facultyMap[facultyName[index]]= index==selectionCount-1? true:false;
+                        // }
+                        // else{
+                        //   facultyMap[facultyName[index]] = false;
+                        //   facultyName.insert(selectionCount+1,facultyName[index]);
+                        //   facultyName.removeAt(index);
+                        //   // _value[selectionCount]=false;
+                        //
+                        // }
+
+
+                    });
+
+                  },
+                );
+              }),
+            ),
+          ],
+        )
     );
   }
 
@@ -219,6 +283,7 @@ class _SelectFacultyState extends State<SelectFaculty> {
     'Uma Shankar'
   ];
 
+
   Future<DateTime?> pickDate() => showDatePicker(
     context: context,
     initialDate: datetime,
@@ -227,8 +292,8 @@ class _SelectFacultyState extends State<SelectFaculty> {
   );
 
   Future<TimeOfDay?> pickTime() => showTimePicker(
-      context: context,
-      initialTime: TimeOfDay(hour: time_.hour, minute: time_.minute),
+    context: context,
+    initialTime: TimeOfDay(hour: time_.hour, minute: time_.minute),
   );
 
   Future<void> _dialogBuilder(context){
@@ -244,19 +309,19 @@ class _SelectFacultyState extends State<SelectFaculty> {
                   children: [
                     InkWell(
                       onTap: () async{
-                  final date = await pickDate();
+                        final date = await pickDate();
 
-                  setState((){
-                    if(date!=null){
-                      selectDate='${date.day}/${date.month}/${date.year}';
-                    }
-                  });
-                },
+                        setState((){
+                          if(date!=null){
+                            selectDate='${date.day}/${date.month}/${date.year}';
+                          }
+                        });
+                      },
                       child: Row(
                         children: [
-                        const Icon(
-                           Icons.date_range,
-                         ),
+                          const Icon(
+                            Icons.date_range,
+                          ),
                           SizedBox(width: 15,),
                           Text(selectDate),
                         ],
@@ -283,12 +348,37 @@ class _SelectFacultyState extends State<SelectFaculty> {
                       child: Row(
                         children: [
                           Icon(
-                             Icons.access_time
+                              Icons.access_time
                           ),
                           SizedBox(width: 15,),
                           Text(selectTime)
                         ],
                       ),
+                    ),
+
+
+                    SizedBox(height: 20,),
+                    TextButton(
+                        onPressed: (){
+                          if(selectDate=="Select Date" && selectTime=="Select Time"){
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text("Select Date and Meeting Duration "),
+                            ));
+                          }
+                          else{
+                            faculty.map((name){
+                              if(facultyMap[name]! && !selectedFacutly.contains(name)){
+                                selectedFacutly.add(name);
+                              }
+                              else if(!facultyMap[name]! && selectedFacutly.contains(name)){
+                                selectedFacutly.remove(name);
+                              }
+                            }).toList();
+                            print(selectedFacutly);
+                          }
+
+                        },
+                        child: Text("Search",textScaleFactor: 1.2,),
                     ),
                   ],
                 );
