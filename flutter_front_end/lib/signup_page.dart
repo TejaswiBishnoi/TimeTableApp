@@ -18,11 +18,11 @@ class _SignupPageState extends State<SignupPage> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero,()async {
-      print("&&&&&&&&&&&&&&&&&");
+      // print("&&&&&&&&&&&&&&&&&");
 
       String? value = await tauth.storage.read(key: "token");
-      print(value);
-      print("abc");
+      // print(value);
+      // print("abc");
       DateTime currDate = DateTime.now();
       String date = currDate.toString();
       if(value!=null){

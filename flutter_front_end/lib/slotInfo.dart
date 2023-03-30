@@ -37,6 +37,7 @@ class _SlotInfoState extends State<SlotInfo> {
         appBar: AppBar(
           leading: IconButton(onPressed: () {
             Navigator.pop(context);
+            // Navigator.of(context).popUntil((route) => route.isFirst);
           },
               icon: const Icon(Icons.arrow_back)),
           title: Text("Available Slots"),
