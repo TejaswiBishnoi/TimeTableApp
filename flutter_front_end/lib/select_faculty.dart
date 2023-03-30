@@ -1,8 +1,10 @@
 import 'package:cell_calendar/cell_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_front_end/signedin_page.dart';
+import 'package:flutter_front_end/slotInfo.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'new_week.dart';
+import 'package:duration_picker/duration_picker.dart';
 
 class SelectFaculty extends StatefulWidget {
   const SelectFaculty({Key? key}) : super(key: key);
@@ -26,6 +28,8 @@ class _SelectFacultyState extends State<SelectFaculty> {
   DateTime time_ = DateTime.now();
   String selectDate = "Select Date";
   String selectTime = "Select Time";
+  Duration selectDuration = Duration(hours: 0,minutes: 0);
+  String durationLength = "00:00";
 
   @override
   void initState() {
@@ -34,12 +38,10 @@ class _SelectFacultyState extends State<SelectFaculty> {
     }).toList();
     facultyName = faculty;
     listLength = faculty.length;
+    durationLength = '${(selectDuration.inMinutes/60).toInt()} hours ${selectDuration.inMinutes%60} minutes';
     super.initState();
   }
   Widget build(BuildContext context) {
-
-    //List<String> facultyName = faculty;
-    //int listLength= faculty.length;
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(onPressed: () {
@@ -296,12 +298,37 @@ class _SelectFacultyState extends State<SelectFaculty> {
     initialTime: TimeOfDay(hour: time_.hour, minute: time_.minute),
   );
 
+  Future<Duration?>pickDuration(context){
+    return showDialog<Duration?>(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: Text('Select Duration'),
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return DurationPicker(
+                duration: selectDuration,
+                onChange: <Duration>(val) {
+                  setState(() {
+                    selectDuration = val;
+                  });
+                  return selectDuration;
+                },
+                snapToMins: 5.0,
+              );
+            }
+          )
+        );
+      }
+    );
+  }
+
   Future<void> _dialogBuilder(context){
     return showDialog<void>(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Select Date & Time'),
+            title: Text('Select Date & Duration'),
             content: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState){
                 return Wrap(
@@ -331,27 +358,33 @@ class _SelectFacultyState extends State<SelectFaculty> {
                     SizedBox(height: 20,),
                     InkWell(
                       onTap: () async{
-                        final time = await pickTime();
-                        setState((){
-                          if(time!=null){
-                            selectTime=('${time.hour.toString().padLeft(2,'')}:${time.minute.toString().padLeft(2,'')}');
-                            time_ =  DateTime(
-                              datetime.year,
-                              datetime.month,
-                              datetime.day,
-                              time.hour,
-                              time.minute,
-                            );
-                          }
-                        });
+                        await pickDuration(context);
+                        setState((){durationLength = '${(selectDuration.inMinutes/60).toInt()} hours ${selectDuration.inMinutes%60} minutes';});
+                        // final time = await pickTime();
+
+                        // setState(() async {
+                        //
+                        //   if(duration!=null){
+                        //
+                        //     selectDuration = duration;
+                        //     selectTime=('${time.hour.toString().padLeft(2,'')}:${time.minute.toString().padLeft(2,'')}');
+                        //     time_ =  DateTime(
+                        //       datetime.year,
+                        //       datetime.month,
+                        //       datetime.day,
+                        //       time.hour,
+                        //       time.minute,
+                        //     );
+                        //   }
+                        // });
                       },
                       child: Row(
                         children: [
                           Icon(
-                              Icons.access_time
+                              Icons.access_time,
                           ),
                           SizedBox(width: 15,),
-                          Text(selectTime)
+                          Text(durationLength)
                         ],
                       ),
                     ),
@@ -360,9 +393,9 @@ class _SelectFacultyState extends State<SelectFaculty> {
                     SizedBox(height: 20,),
                     TextButton(
                         onPressed: (){
-                          if(selectDate=="Select Date" && selectTime=="Select Time"){
+                          if(selectDate=="Select Date" || selectDuration==Duration(hours: 0,minutes: 0,seconds: 0)){
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text("Select Date and Meeting Duration "),
+                              content: Text("Select Date and Meeting Duration"),
                             ));
                           }
                           else{
@@ -374,7 +407,9 @@ class _SelectFacultyState extends State<SelectFaculty> {
                                 selectedFacutly.remove(name);
                               }
                             }).toList();
-                            print(selectedFacutly);
+                            Navigator.of(context).push(MaterialPageRoute( // do not use pushReplacement
+                                builder: (context) => SlotInfo(faculty: selectedFacutly,date: selectDate,duration: '${selectDuration.inMinutes}',)));
+                            //print(selectedFacutly);
                           }
 
                         },

@@ -3,14 +3,18 @@ import 'dart:io';
 import 'post_model.dart';
 import 'event_model.dart';
 import 'class_model.dart';
+import 'slot.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 
 class HttpService {
   final String postUrl = "http://192.168.137.1:5143/Schedule/Weekd";
   final String eventUrl = "http://192.168.137.1:5143/Schedule/EventDetails";
   final String classUrl = "http://192.168.137.1:5143/Schedule/Cweek";
+  final String slotUrl = "";
+
 
   dynamic dir;
 
@@ -18,6 +22,22 @@ class HttpService {
     dir = await getTemporaryDirectory();
   }
 
+  Future<List<Slot>> getSlotInfo(String date,String duration, List<String> faculty,String? token) async {
+    print("get slots");
+    print(faculty);
+    print(date);
+    print(duration);
+    print(token);
+    Response res = await post(Uri.parse(slotUrl),body: {date: date,duration: duration,faculty: faculty});
+    if(res.statusCode == 200){
+      List<dynamic> body = jsonDecode(res.body);
+      List<Slot> slots = body.map<Slot>((dynamic item) => Slot.fromJson(item)).toList();
+      return slots;
+    }
+    else{
+      throw "Can't get slot information";
+    }
+  }
 
   Future<List<DailyEvents>> getClassInfo(String? token, String date, String classNo) async {
     String d1 = date.substring(0,4);
