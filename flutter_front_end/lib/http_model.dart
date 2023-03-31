@@ -13,7 +13,7 @@ class HttpService {
   final String postUrl = "http://192.168.137.1:5143/Schedule/Weekd";
   final String eventUrl = "http://192.168.137.1:5143/Schedule/EventDetails";
   final String classUrl = "http://192.168.137.1:5143/Schedule/Cweek";
-  final String slotUrl = "";
+  final String slotUrl = "http://192.168.137.1:5143/Meet/Meet";
 
 
   dynamic dir;
@@ -22,15 +22,18 @@ class HttpService {
     dir = await getTemporaryDirectory();
   }
 
-  Future<List<Slot>> getSlotInfo(String date,String duration, List<String> faculty,String? token) async {
+  Future<List<Slot>> getSlotInfo(String date,int duration, List<String> faculty,String? token) async {
     print("get slots");
     print(faculty);
     print(date);
     print(duration);
     print(token);
-    Response res = await post(Uri.parse(slotUrl),body: {date: date,duration: duration,faculty: faculty});
+    Response res = await post(Uri.parse(slotUrl),body: json.encode({'date': date,'duration': duration,'faculty': faculty}),headers: {"accesstoken":"bearer $token","Content-Type":"application/json"});
+    // print(json.encode({'date': date,'duration': duration,'faculty': faculty}));
+    // print(res.statusCode);
     if(res.statusCode == 200){
       List<dynamic> body = jsonDecode(res.body);
+      print(body);
       List<Slot> slots = body.map<Slot>((dynamic item) => Slot.fromJson(item)).toList();
       return slots;
     }

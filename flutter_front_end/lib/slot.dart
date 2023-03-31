@@ -10,7 +10,7 @@ class Slot{
     required this.end_time,
   });
   factory Slot.fromJson(dynamic json){
-    return Slot(start_time: json['start_time'] as String, end_time: json['end_time'] as String, );
+    return Slot(start_time: json['start'] as String, end_time: json['end'] as String, );
   }
 }
 // class SlotList{

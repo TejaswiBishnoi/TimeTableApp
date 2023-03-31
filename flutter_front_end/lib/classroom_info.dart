@@ -89,7 +89,7 @@ class _ClassInfoState extends State<ClassInfo> {
                                     const SizedBox(width: 20,),
                                     Text(day.event_list![index].end_time),
                                     const SizedBox(width: 20,),
-                                    Text(day.event_list![index].faculty)
+                                    Expanded(child: Text(day.event_list![index].faculty,))
                                   ],
                                 ),
                               ),

@@ -408,7 +408,7 @@ class _SelectFacultyState extends State<SelectFaculty> {
                               }
                             }).toList();
                             Navigator.of(context).push(MaterialPageRoute( // do not use pushReplacement
-                                builder: (context) => SlotInfo(faculty: selectedFacutly,date: selectDate,duration: '${selectDuration.inMinutes}',)));
+                                builder: (context) => SlotInfo(faculty: selectedFacutly,date: selectDate,duration: selectDuration.inMinutes,)));
                             //print(selectedFacutly);
                           }
 

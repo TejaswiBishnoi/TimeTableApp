@@ -7,7 +7,7 @@ class SlotInfo extends StatefulWidget {
   SlotInfo({Key? key, required this.faculty, required this.date, required this.duration}) : super(key: key);
   List<String> faculty;
   String date;
-  String duration;
+  int duration;
 
   @override
   State<SlotInfo> createState() => _SlotInfoState();
@@ -63,8 +63,11 @@ class _SlotInfoState extends State<SlotInfo> {
               return ListView.builder(
                  itemCount: slots.length,
                 itemBuilder: (context,index){
-                   return ListTile(
-                     title: Text('${slots[index].start_time}  -  ${slots[index].end_time}'),
+                   return Card(
+                     child: ListTile(
+                       title: Text('From ${slots[index].start_time}  To ${slots[index].end_time}'),
+                       subtitle: Text('On ${widget.date}'),
+                     ),
                    );
                 },
               );
