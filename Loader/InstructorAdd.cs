@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using Loader.DB;
 
 namespace Loader
 {
@@ -25,7 +24,7 @@ namespace Loader
         public static Dictionary<string, string> lis = new Dictionary<string, string>();
         public static List<CourseTemp> lis_ = new(); //Instructor ID -> Instructor Name;
         public static Dictionary<string, List<string>> isof = new();
-        public static timetable2Context tt = new();
+        public static MyContext context = new();
         public static void ParseData(string data)
         {
             var x = data.Split(',').Select(s => s.Trim());
@@ -62,7 +61,7 @@ namespace Loader
         public static void AddInstructor()
         {
             HtmlDocument doc = new HtmlDocument();
-            doc.Load(@"G:\DBTemp\cd.htm");
+            doc.Load(@"G:\DBTemp\cco.htm");
             var rows = doc.DocumentNode.SelectNodes(".//tr");
             for (int i = 2; i< rows.Count; i++)
             {
@@ -86,24 +85,24 @@ namespace Loader
             }
             foreach (var x in lis.OrderBy(x => x.Value))
             {
-                if (!tt.Instructors.Any(y => y.InstructorId == x.Key))
+                if (!context.Instructors.Any(y => y.instructor_id == x.Key))
                 {
                     Instructor ins = new Instructor();
-                    ins.Name = x.Value;
-                    ins.InstructorId= x.Key;
-                    ins.EmailId = x.Key + "@iitjammu.ac.in";
-                    ins.Department = "";
-                    tt.Instructors.Add(ins);
+                    ins.name = x.Value;
+                    ins.instructor_id = x.Key;
+                    ins.email_id = x.Key + "@iitjammu.ac.in";
+                    ins.department = "";
+                    context.Instructors.Add(ins);
                     Console.WriteLine("Ins");
                 }
                 Console.WriteLine("{0} | {1}", x.Key, x.Value);
             }
-            tt.SaveChanges();
+            context.SaveChanges();
         }
         public static void addCourse()
         {
             HtmlDocument doc = new HtmlDocument();
-            doc.Load(@"G:\DBTemp\cd.htm");
+            doc.Load(@"G:\DBTemp\cco.htm");
             var rows = doc.DocumentNode.SelectNodes(".//tr");
             for (int i = 2; i < rows.Count; i++)
             {
@@ -117,18 +116,18 @@ namespace Loader
                     Name = cols[2].InnerText.Trim().Replace("\n ", "").Replace("\r", "").Replace("\n", ""),
                     cat = cols[3].InnerText.Trim().Replace("\n ", "").Replace("\r", "").Replace("\n", ""),
                     typ = cols[4].InnerText.Trim().Replace("\n ", "").Replace("\r", "").Replace("\n", ""),
-                    total = (float)Convert.ToDouble(cols[5].InnerText.Trim().Replace("\n ", "").Replace("\r", "").Replace("\n", "")),
-                    lec = (float)Convert.ToDouble(cols[6].InnerText.Trim().Replace("\n ", "").Replace("\r", "").Replace("\n", "")),
-                    tutor = (float)Convert.ToDouble(cols[7].InnerText.Trim().Replace("\n ", "").Replace("\r", "").Replace("\n", "")),
-                    prac = (float)Convert.ToDouble(cols[8].InnerText.Trim().Replace("\n ", "").Replace("\r", "").Replace("\n", ""))
+                    total = (float)Convert.ToDouble(cols[6].InnerText.Trim().Replace("\n ", "").Replace("\r", "").Replace("\n", "")),
+                    lec = (float)Convert.ToDouble(cols[7].InnerText.Trim().Replace("\n ", "").Replace("\r", "").Replace("\n", "")),
+                    tutor = (float)Convert.ToDouble(cols[8].InnerText.Trim().Replace("\n ", "").Replace("\r", "").Replace("\n", "")),
+                    prac = (float)Convert.ToDouble(cols[9].InnerText.Trim().Replace("\n ", "").Replace("\r", "").Replace("\n", ""))
                 };                     
-                if (cols[9].InnerText ==null || cols[9].InnerText == "")
+                if (cols[10].InnerText ==null || cols[10].InnerText == "")
                 {
                     c.coord = "IITJMU000";
                 }
                 else
                 {
-                    var temps = cols[9].InnerText.Replace("\r", "").Replace("\n ", "").Replace("\n", "").Trim();
+                    var temps = cols[10].InnerText.Replace("\r", "").Replace("\n ", "").Replace("\n", "").Trim();
                     if (temps.StartsWith("Course Coordinator:"))
                     {
                         c.coord = temps.Split('(').Last();
@@ -145,30 +144,32 @@ namespace Loader
             }
             foreach (var o in lis_)
             {
-                if (!tt.Courses.Any(x => x.CourseCode == o.Id))
+                if (!context.Courses.Any(x => x.course_code == o.Id))
                 {
                     Course c = new Course();
-                    c.CourseCode = o.Id;
-                    c.CourseName = o.Name;
-                    c.LectureCredits = Convert.ToDecimal(o.lec);
-                    c.PracticalCredits = Convert.ToDecimal(o.prac);
-                    c.TutorialCredits = Convert.ToDecimal(o.tutor);
-                    c.TotalCredits = Convert.ToDecimal(o.total);
-                    c.Type = o.typ;
-                    c.Category = o.cat;
-                    c.CoordinatorId = o.coord;
-                    c.Department = "";
-                    tt.Courses.Add(c);
+                    c.course_code = o.Id;
+                    c.course_name = o.Name;
+                    c.lecture_credits = (o.lec);
+                    c.practical_credits = (o.prac);
+                    c.tutorial_credits = (o.tutor);
+                    c.total_credits = (o.total);
+                    c.type = o.typ;
+                    c.category = o.cat;
+                    c.coordinator_id = o.coord;
+                    c.department = "";
+                    context.Courses.Add(c);
                     Console.WriteLine("Ins");
+                    
                 }
                 Console.WriteLine("{0} | {1} | {2} | {3} | {4} | {5}", o.Id, o.Name, o.total, o.typ, o.cat, o.coord);
+                context.SaveChanges();
             }
-            tt.SaveChanges();
+            
         }
         public static void addInstructorOf()
         {
             HtmlDocument doc = new HtmlDocument();
-            doc.Load(@"G:\DBTemp\cd.htm");
+            doc.Load(@"G:\DBTemp\cco.htm");
             var rows = doc.DocumentNode.SelectNodes(".//tr");
             for (int i = 2; i < rows.Count; i++)
             {
@@ -178,7 +179,7 @@ namespace Loader
                 if (cols[0].InnerText == "") continue;
                 var crs = cols[1].InnerText.Trim().Replace("\n ", "").Replace("\r", "").Replace("\n", "");
                 isof[crs] = new List<string>();
-                ParseData(cols[9].InnerText, crs);
+                ParseData(cols[10].InnerText, crs);
                 if (cols.First().Attributes["rowspan"] != null && cols.First().Attributes["rowspan"].Value != "1")
                 {
                     int ff = Convert.ToInt32(cols.First().Attributes["rowspan"].Value);
@@ -196,11 +197,20 @@ namespace Loader
             {
                 Console.Write(tt.Key + " =>");
                 foreach(var ttt in tt.Value)
-                {
+                {                 
+                    if(!context.Instrucor_Ofs.Any(x => (x.course_code == tt.Key && x.instrucor_id == ttt)))
+                    {
+                        Console.WriteLine("Ins");
+                        Instructor_Of x= new Instructor_Of();
+                        x.course_code = tt.Key;
+                        x.instrucor_id = ttt;
+                        context.Instrucor_Ofs.Add(x);
+                    }
                     Console.Write(" " + ttt);
                 }
                 Console.WriteLine();
             }
+            context.SaveChanges();
         }
         public static void ParseData(string data, string crs)
         {

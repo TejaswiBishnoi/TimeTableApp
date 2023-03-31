@@ -41,5 +41,25 @@
         public string next_start_time { get; set; }
         public string next_end_time { get; set; }
     }
+    public class CEventDTO
+    {
+        public string start_time { get; set; }
+        public string end_time { get; set; }
+        public string instructor { get; set; }
+        public string course_name { get; set; }
+        public string section { get; set; }
+        public string event_id { get; set; }
+        public string occurence_id { get; set; }
+    }
 
+    public class CDailyDTO
+    {
+        public CDailyDTO()
+        {
+            event_list = new List<CEventDTO>();
+        }
+        public IList<CEventDTO> event_list { get; set; }
+        public string day { get; set; }
+        public string date { get; set; }
+    }
 }

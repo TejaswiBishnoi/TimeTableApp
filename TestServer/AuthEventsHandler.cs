@@ -17,6 +17,7 @@ namespace TestServer
 
         private Task MessageReceivedHandler(MessageReceivedContext context)
         {
+            Console.WriteLine("Log: Recv on Token");
             if (context.Request.Headers.TryGetValue("AccessToken", out StringValues headerValue))
             {
                 string token = headerValue;
