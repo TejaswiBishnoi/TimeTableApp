@@ -6,6 +6,7 @@
         {
             Console.WriteLine("Hello, World!");
             Schedule.read(Ic:false);
+            //InstructorAdd.addInstructorOf();
         }
     }
 }

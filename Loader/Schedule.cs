@@ -406,7 +406,7 @@ namespace Loader
             int mode = 0;
             MyContext context = new MyContext();
             HtmlDocument doc = new HtmlDocument();
-            doc.Load(@"G:\DBTemp\New folder\MSC_1.htm");
+            doc.Load(@"G:\DBTemp\attachments\MT.htm");
             var tables = doc.DocumentNode.SelectNodes("//table");
             if (tables == null) return;
             if (tables.Count == 0) return;
@@ -570,7 +570,7 @@ namespace Loader
         {
             MyContext context= new MyContext();
             HtmlDocument doc = new HtmlDocument();
-            doc.Load(@"G:\DBTemp\New folder\MT_1.htm");
+            doc.Load(@"G:\DBTemp\attachments\2nd.htm");
             var tables = doc.DocumentNode.SelectNodes("//table");            
             if (tables == null) return;
             if (tables.Count == 0) return;

@@ -170,7 +170,11 @@ namespace TestServer.Controllers
 
             Dictionary<string, DateTime> ceq = new Dictionary<string, DateTime>();
 
-            Room rm = context.Rooms.Single(s => s.room_code == code);
+            Room? rm = context.Rooms.SingleOrDefault(s => s.room_code == code);
+            if(rm == null)
+            {
+                return NotFound();
+            }
             context.Entry(rm).Collection(s => s.occurences).Query().Include(s => s.event_).ThenInclude(s => s.section).Load();
             IList<Occurence> ocr = rm.occurences.Where(s => DateTime.Compare(s.date_start, dt) <= 0 && DateTime.Compare(s.date_end, dt2) >= 0).ToList();
             

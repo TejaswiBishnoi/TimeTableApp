@@ -17,7 +17,9 @@ namespace TestServer
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Instructor_Of> Instrucor_Ofs { get; set; }
         public DbSet<Teaches> Teaches_ { get; set; }
+        public DbSet<Calendar> Calendar { get; set; }
 
+        public DbSet<GoogleMiddleToken> GoogleMiddleTokens { get; set; }
 
         public MyContext(DbContextOptions<MyContext> options) : base(options)
         {
@@ -33,6 +35,9 @@ namespace TestServer
             modelBuilder.Entity<Room>().HasKey(s => s.room_code);
             modelBuilder.Entity<Instructor_Of>().HasKey(s => new {s.course_code, s.instrucor_id});
             modelBuilder.Entity<Teaches>().HasKey(s => new {s.section_id, s.instructor_id});
+            modelBuilder.Entity<Calendar>().HasKey(s => new { s.instructor_id });
+            modelBuilder.Entity<GoogleMiddleToken>().HasKey(s => s.token);
+            //modelBuilder.Entity<GoogleToken>().HasKey(s => new { s.instructor_id });
 
             modelBuilder.Entity<Instructor>().Property(s=>s.email_id).IsRequired();
             modelBuilder.Entity<Instructor>().Property(s => s.name).IsRequired();
@@ -85,7 +90,10 @@ namespace TestServer
             modelBuilder.Entity<Event>().HasOne<Instructor>(s => s.Owner).WithMany(g => g.events).HasForeignKey(s => s.owner);
 
             modelBuilder.Entity<Occurence>().HasOne<Event>(s => s.event_).WithMany(g => g.occurences).HasForeignKey(s => s.event_id);
-            modelBuilder.Entity<Occurence>().HasOne<Room>(s => s.room).WithMany(g => g.occurences).HasForeignKey(s => s.room_code);            
+            modelBuilder.Entity<Occurence>().HasOne<Room>(s => s.room).WithMany(g => g.occurences).HasForeignKey(s => s.room_code);
+
+            modelBuilder.Entity<Calendar>().HasOne<Instructor>(s => s.instructor).WithOne(s => s.calendar).HasForeignKey<Calendar>(s => s.instructor_id);
+            modelBuilder.Entity<GoogleMiddleToken>().HasOne<Instructor>(s => s.instructor).WithOne(s => s.googletoken).HasForeignKey<GoogleMiddleToken>(s => s.instructor_id);
         }
     }
 }

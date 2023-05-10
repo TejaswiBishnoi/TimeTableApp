@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TestServer;
 
@@ -10,9 +11,10 @@ using TestServer;
 namespace TestServer.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20230428095006_google")]
+    partial class google
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,22 +125,6 @@ namespace TestServer.Migrations
                     b.HasIndex("owner");
 
                     b.ToTable("Events");
-                });
-
-            modelBuilder.Entity("TestServer.GoogleMiddleToken", b =>
-                {
-                    b.Property<string>("token")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("instructor_id")
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("token");
-
-                    b.HasIndex("instructor_id")
-                        .IsUnique();
-
-                    b.ToTable("GoogleMiddleTokens");
                 });
 
             modelBuilder.Entity("TestServer.Instructor", b =>
@@ -314,15 +300,6 @@ namespace TestServer.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("TestServer.GoogleMiddleToken", b =>
-                {
-                    b.HasOne("TestServer.Instructor", "instructor")
-                        .WithOne("googletoken")
-                        .HasForeignKey("TestServer.GoogleMiddleToken", "instructor_id");
-
-                    b.Navigation("instructor");
-                });
-
             modelBuilder.Entity("TestServer.Instructor_Of", b =>
                 {
                     b.HasOne("TestServer.Course", "course")
@@ -419,9 +396,6 @@ namespace TestServer.Migrations
                     b.Navigation("courses");
 
                     b.Navigation("events");
-
-                    b.Navigation("googletoken")
-                        .IsRequired();
 
                     b.Navigation("instrucor_of");
 
