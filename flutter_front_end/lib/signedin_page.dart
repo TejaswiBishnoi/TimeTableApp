@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_front_end/event_desc.dart';
 import 'package:flutter_front_end/select_faculty.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'google_signin_api.dart';
 import 'signup_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -10,18 +12,23 @@ import 'calendar.dart';
 import 'classroom_info.dart';
 import 'faculty_schedule.dart';
 import 'select_faculty.dart';
+import 'package:file_picker/file_picker.dart';
+import 'about.dart';
+
 
 class SignedInPage extends StatefulWidget {
  final String? token;
  final String date;
+ final String photoUrl;
   const SignedInPage({
     Key? key,
     required this.token,
     required this.date,
+    required this.photoUrl,
 }) : super (key: key);
 
   @override
-  State<SignedInPage> createState() => _SignedInPageState(date: date);
+  State<SignedInPage> createState() => _SignedInPageState(date: date,photoUrl: photoUrl);
 }
 
 class _SignedInPageState extends State<SignedInPage> {
@@ -31,10 +38,11 @@ class _SignedInPageState extends State<SignedInPage> {
   String date;
 
   String selectedVal = "";
-
-
+  final scenery = {'Monday': 'scenery.jpeg','Tuesday': 'scenery2.jpeg','Wednesday': 'scenery3.jpeg','Thursday': 'scenery4.jpeg','Friday': 'scenery5.jpeg','Saturday': 'scenery6.jpeg','Sunday': 'scenery7.jpeg'};
+  final photoUrl;
   _SignedInPageState({
     required this.date,
+    required this.photoUrl,
 }) ;
 
   Future getToken() async {
@@ -71,12 +79,19 @@ class _SignedInPageState extends State<SignedInPage> {
       drawer: Drawer(
         backgroundColor: Colors.white70,
         child: ListView(
-          children: [
-            SizedBox(height: 50,),
-            const DrawerHeader(child: Text("Options",
-             textAlign: TextAlign.center,
-             textScaleFactor: 2,
+          children: <Widget>[
+            const SizedBox(height: 50,),
+             DrawerHeader(child:
+            CircleAvatar(
+              backgroundColor: Colors.transparent,
+              child: ClipOval(
+                child: Image.network(photoUrl!),
               ),
+            ) ,
+              //Text("Options",
+            //  textAlign: TextAlign.center,
+            //  textScaleFactor: 2,
+            //   ),
            ),
             
 
@@ -122,6 +137,7 @@ class _SignedInPageState extends State<SignedInPage> {
 
             InkWell(
               onTap: <Future>(){
+                //   },
                 Navigator.of(context).push(MaterialPageRoute( // do not use pushReplacement
                     builder: (context) => SelectFaculty()));
               },
@@ -139,7 +155,132 @@ class _SignedInPageState extends State<SignedInPage> {
                   ),
                 ),
               ),
-            )
+            ),
+
+            InkWell(
+              onTap: <Future>(){
+                return _dialogBuilder(context, "calendar");
+              },
+              child: ListTile(
+                //color: Colors.white38
+                title: SizedBox(
+                  height: 40,
+                  child: Row(
+                    children: const [
+                      SizedBox(width: 50,),
+                      Text("Sync with Calendar",
+                        textScaleFactor: 1.2,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            // InkWell(
+            //   onTap: <Future>(){
+            //     //   },
+            //     Navigator.of(context).push(MaterialPageRoute( // do not use pushReplacement
+            //         builder: (context) => About()));
+            //   },
+            //   child: ListTile(
+            //     //color: Colors.white38
+            //     title: SizedBox(
+            //       height: 40,
+            //       child: Row(
+            //         children: const [
+            //           SizedBox(width: 50,),
+            //           Text("About",
+            //             textScaleFactor: 1.2,
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
+
+            const SizedBox(height: 100,),
+
+            Container(
+                child: Align(
+                    alignment: FractionalOffset.bottomCenter,
+                    child: Column(
+                      children: <Widget>[
+                        Divider(),
+                        const SizedBox(height: 20,),
+                        InkWell(
+                          onTap: ()=>launchUrl(Uri.parse('https://iitjammu.ac.in')),
+                          child: const ListTile(
+                              leading: Icon(Icons.school),
+                              title: Text('IIT Jammu')),
+                        ),
+                        InkWell(
+                          onTap: ()=>Navigator.of(context).push(MaterialPageRoute( // do not use pushReplacement
+                                   builder: (context) => About())),
+                          child: ListTile(
+                              leading: Icon(Icons.help),
+                              title: Text('About')),
+                        )
+                      ],
+                    ))),
+        // InkWell(
+          //   onTap: <Future>()async{
+          //     FilePickerResult? result = await FilePicker.platform.pickFiles();
+          //
+          //     if (result != null) {
+          //       File file = File(result.files.single.path!);
+          //     } else {
+          //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          //         content: Text("No File Selected"),
+          //       ));
+          //     }
+            // InkWell(
+            //   onTap: <Future>()async{
+            //     FilePickerResult? result = await FilePicker.platform.pickFiles();
+            //
+            //     if (result != null) {
+            //       File file = File(result.files.single.path!);
+            //     } else {
+            //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            //         content: Text("No File Selected"),
+            //       ));
+            //     }
+            //   },
+            //   child: ListTile(
+            //     //color: Colors.white38
+            //     title: SizedBox(
+            //       height: 40,
+            //       child: Row(
+            //         children: const [
+            //           SizedBox(width: 50,),
+            //           Text("Upload File",
+            //             textScaleFactor: 1.2,
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // InkWell(
+            //   onTap: <Future>()async{
+            //
+            //   },
+            //   child: ListTile(
+            //     //color: Colors.white38
+            //     title: SizedBox(
+            //       height: 40,
+            //       child: Row(
+            //         children: const [
+            //           SizedBox(width: 50,),
+            //           Text("Insert in Calendar",
+            //             textScaleFactor: 1.2,
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // )
+
           ],
         ),
       ),
@@ -192,64 +333,65 @@ class _SignedInPageState extends State<SignedInPage> {
           List<Daily>? week = snapshot.data;
 
           return PageView(
-            children: week!.map((Daily day) => RefreshIndicator(
-              onRefresh: (){
-                return Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => StatefulBuilder(builder: (BuildContext context, setState) { return SignedInPage(token: token,date: date,); },)
-                ));
-              },
-              child: CustomScrollView(
-                slivers: <Widget>[
-                  SliverAppBar(
-                    automaticallyImplyLeading: false,
-                    pinned: true,
-                    expandedHeight: 130.0,
-                    flexibleSpace: FlexibleSpaceBar(
+            children: week!.map((Daily day) => CustomScrollView(  // RefreshIndicator widget removed here
+              slivers: <Widget>[
+                SliverAppBar(
+                  automaticallyImplyLeading: false,
+                  pinned: true,
+                  expandedHeight: 130.0,
+                  flexibleSpace: Stack(
+                    children: <Widget>[
+                      // Positioned.fill(
+                      //   child: Image.asset(
+                      //     'assets/${scenery[day.day]}',
+                      //     fit: BoxFit.cover,
+                      //   ),
+                      // ),
+                      FlexibleSpaceBar(
                       title: Text("${day.day}\n${day.date}", textScaleFactor: 0.8,)
-
-
                     ),
+              ],
                   ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 0,
-                      child: Center(
-                        child: Text('Scroll to see the SliverAppBar in effect.'),
-                      ),
-                    ),
-                  ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                        return Card(
-                            child: InkWell(
-                              onTap: (){Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>  EventDetails(occur_id: day.event_list![index].occur_id, event_id: day.event_list![index].event_id,token: token,id: day.event_list![index].event_id,httpService: httpService,),
-                              ));
-                                },
-                              child: SizedBox(height: 80,
-                                child: Row(children: [
-                                SizedBox(width: 10,),
-                                Text(day.event_list![index].start_time+' - ',
+                ),
+                // const SliverToBoxAdapter(
+                //   child: SizedBox(
+                //     height: 5,
+                //     child: Center(
+                //       child: Text('Scroll to see the SliverAppBar in effect.'),
+                //     ),
+                //   ),
+                // ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                      return Card(
+                          child: InkWell(
+                            onTap: (){Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>  EventDetails(title: day.event_list![index].course_name,occur_id: day.event_list![index].occur_id, event_id: day.event_list![index].event_id,token: token,id: day.event_list![index].event_id,httpService: httpService,),
+                            ));
+                              },
+                            child: SizedBox(height: 80,
+                              child: Row(children: [
+                              SizedBox(width: 10,),
+                              Text(day.event_list![index].start_time+' - ',
+                              ),
+                              Text(day.event_list![index].end_time),
+                              SizedBox(width: 40,),
+                              Container(
+                                constraints: BoxConstraints(maxWidth: 150),
+                                child: Text(day.event_list![index].course_name,
                                 ),
-                                Text(day.event_list![index].end_time),
-                                SizedBox(width: 40,),
-                                Container(
-                                  constraints: BoxConstraints(maxWidth: 150),
-                                  child: Text(day.event_list![index].course_name,
-                                  ),
-                                ),
-                                //SizedBox(width: 20,),
-                                //Text(day.event_list![index].section),
-                              ],),),
-                            ),
-                        );
-                      },
-                      childCount: day.event_list?.length,
-                    ),
+                              ),
+                              //SizedBox(width: 20,),
+                              //Text(day.event_list![index].section),
+                            ],),),
+                          ),
+                      );
+                    },
+                    childCount: day.event_list?.length,
                   ),
-                ],
-              ),
+                ),
+              ],
             )).toList(),
           );
         }
@@ -279,7 +421,9 @@ class _SignedInPageState extends State<SignedInPage> {
 
   static const List<String> classroom = <String>[
     '01-AC-1-01',
+    '01-AC-1-02',
     '01-AC-1-03',
+    '01-AC-1-04',
     '01-AC-2-01',
     '01-AC-2-03',
     '01-AC-2-07',
@@ -425,6 +569,33 @@ class _SignedInPageState extends State<SignedInPage> {
                     builder: (context) =>  ClassInfo(classNo: classNo, date: date,),
                   ));
                   //Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        }
+
+        else if(type == "calendar"){
+          return AlertDialog(
+            content: const Text("Are you sure you want to sync your schedule with Google Calendar"),
+            actions: <Widget>[
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.labelLarge,
+                ),
+                child: const Text("No"),
+                onPressed: () {
+                    Navigator.of(context).pop();
+                },
+              ),
+
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.labelLarge,
+                ),
+                child: const Text("Sync"),
+                onPressed: () {
+                  httpService.syncCalendar(token);
                 },
               ),
             ],

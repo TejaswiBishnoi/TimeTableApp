@@ -128,7 +128,7 @@ class _NewWeek extends State<NewWeek> {
                             return Card(
                               child: InkWell(
                                 onTap: (){Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>  EventDetails(occur_id: day.event_list![index].occur_id, event_id: day.event_list![index].event_id,token: token,id: day.event_list![index].event_id,httpService: httpService,),
+                                  builder: (context) =>  EventDetails(title: day.event_list![index].course_name,occur_id: day.event_list![index].occur_id, event_id: day.event_list![index].event_id,token: token,id: day.event_list![index].event_id,httpService: httpService,),
                                 ));
                                 },
                                 child: SizedBox(height: 80,

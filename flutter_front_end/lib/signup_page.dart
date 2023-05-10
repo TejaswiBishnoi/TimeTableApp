@@ -21,13 +21,14 @@ class _SignupPageState extends State<SignupPage> {
       // print("&&&&&&&&&&&&&&&&&");
 
       String? value = await tauth.storage.read(key: "token");
+      String? photoUrl = await tauth.storage.read(key: "userImage");
       // print(value);
       // print("abc");
       DateTime currDate = DateTime.now();
       String date = currDate.toString();
       if(value!=null){
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => SignedInPage(token: value,date: date,)
+            builder: (context) => SignedInPage(token: value,date: date,photoUrl: photoUrl!,)
         ));
       }
     });
@@ -116,6 +117,7 @@ class _SignupPageState extends State<SignupPage> {
   }
   Future signIn() async {
     final user = await GoogleSignInAPI.login();
+    await tauth.storage.write(key: "userImage", value: user?.photoUrl);
     if(user == null){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sign in failed')));
     }
@@ -126,7 +128,7 @@ class _SignupPageState extends State<SignupPage> {
       DateTime datetime = DateTime.now();
       String date = datetime.toString();
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => SignedInPage(token: token,date: date,)
+        builder: (context) => SignedInPage(token: token,date: date,photoUrl: user.photoUrl!,)
     ));
     }
   }

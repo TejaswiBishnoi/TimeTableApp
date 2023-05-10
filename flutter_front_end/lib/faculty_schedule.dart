@@ -27,7 +27,7 @@ class _FacultySched extends State<FacultySched> {
   String? token;
   String date;
   String faculty;
-
+  final scenery = {'Monday': 'background.jpg','Tuesday': 'scenery2.jpeg','Wednesday': 'scenery3.jpeg','Thursday': 'scenery4.jpeg','Friday': 'scenery5.jpeg','Saturday': 'scenery6.jpeg','Sunday': 'scenery7.jpeg'};
   String selectedVal = "";
 
 
@@ -96,64 +96,67 @@ class _FacultySched extends State<FacultySched> {
               List<Daily>? week = snapshot.data;
 
               return PageView(
-                children: week!.map((Daily day) => RefreshIndicator(
-                  onRefresh: (){
-                    return Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => StatefulBuilder(builder: (BuildContext context, setState) { return FacultySched(token: token,date: date,faculty: faculty,); },)
-                    ));
-                  },
-                  child: CustomScrollView(
-                    slivers: <Widget>[
-                      SliverAppBar(
-                        automaticallyImplyLeading: false,
-                        pinned: true,
-                        expandedHeight: 130.0,
-                        flexibleSpace: FlexibleSpaceBar(
+                children: week!.map((Daily day) => CustomScrollView( // Refresh Indicator Removed
+                  slivers: <Widget>[
+                    SliverAppBar(
+
+                      automaticallyImplyLeading: false,
+                      pinned: true,
+                      expandedHeight: 130.0,
+                      flexibleSpace: Stack(
+                        children: <Widget>[
+                          // Positioned.fill(
+                          //   child: Image.asset(
+                          //     'assets/${scenery[day.day]}',
+                          //     fit: BoxFit.cover,
+                          //   ),
+                          // ),
+                          FlexibleSpaceBar(
                             title: Text("${day.day}\n${day.date}", textScaleFactor: 0.8,)
 
-
+                        ),
+                  ],
+                      ),
+                    ),
+                    const SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 0,
+                        child: Center(
+                          child: Text('Scroll to see the SliverAppBar in effect.'),
                         ),
                       ),
-                      const SliverToBoxAdapter(
-                        child: SizedBox(
-                          height: 0,
-                          child: Center(
-                            child: Text('Scroll to see the SliverAppBar in effect.'),
-                          ),
-                        ),
-                      ),
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                            return Card(
-                              child: InkWell(
-                                onTap: (){Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>  EventDetails(occur_id: day.event_list![index].occur_id, event_id: day.event_list![index].event_id,token: token,id: day.event_list![index].event_id,httpService: httpService,),
-                                ));
-                                },
-                                child: SizedBox(height: 80,
-                                  child: Row(children: [
-                                    SizedBox(width: 10,),
-                                    Text(day.event_list![index].start_time+' - ',
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                          return Card(
+                            child: InkWell(
+                              onTap: (){Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>  EventDetails(title: day.event_list![index].course_name,occur_id: day.event_list![index].occur_id, event_id: day.event_list![index].event_id,token: token,id: day.event_list![index].event_id,httpService: httpService,),
+                              ));
+                              },
+                              child: SizedBox(height: 80,
+                                child: Row(children: [
+                                  SizedBox(width: 10,),
+                                  Text(day.event_list![index].start_time+' - ',
+                                  ),
+                                  Text(day.event_list![index].end_time),
+                                  SizedBox(width: 40,),
+                                  Container(
+                                    constraints: BoxConstraints(maxWidth: 150),
+                                    child: Text(day.event_list![index].course_name,
                                     ),
-                                    Text(day.event_list![index].end_time),
-                                    SizedBox(width: 40,),
-                                    Container(
-                                      constraints: BoxConstraints(maxWidth: 150),
-                                      child: Text(day.event_list![index].course_name,
-                                      ),
-                                    ),
-                                    //SizedBox(width: 20,),
-                                    //Text(day.event_list![index].section),
-                                  ],),),
-                              ),
-                            );
-                          },
-                          childCount: day.event_list?.length,
-                        ),
+                                  ),
+                                  //SizedBox(width: 20,),
+                                  //Text(day.event_list![index].section),
+                                ],),),
+                            ),
+                          );
+                        },
+                        childCount: day.event_list?.length,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 )).toList(),
               );
             }

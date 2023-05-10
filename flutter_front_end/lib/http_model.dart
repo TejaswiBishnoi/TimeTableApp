@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'post_model.dart';
 import 'event_model.dart';
 import 'class_model.dart';
@@ -14,13 +16,32 @@ class HttpService {
   final String eventUrl = "http://192.168.137.1:5143/Schedule/EventDetails";
   final String classUrl = "http://192.168.137.1:5143/Schedule/Cweek";
   final String slotUrl = "http://192.168.137.1:5143/Meet/Meet";
-
+  final String calendarUrl = "http://192.168.137.1:5143/GoogleAuth/callogin";
 
   dynamic dir;
 
   Future<void> getDir() async {
     dir = await getTemporaryDirectory();
   }
+
+  Future<String> syncCalendar(String? token) async {
+    Response res = await get(Uri.parse(calendarUrl),headers: {"accesstoken":"bearer $token"});
+    String message = "";
+    if(res.statusCode == 200) {
+      String string = jsonDecode(res.body);
+      if(string!="synced"){
+        launchUrl(Uri.parse(string));
+      }
+      else{
+        message = "schedule synced successfully";
+      }
+    }
+    else{
+      throw "Unable to sync";
+    }
+    return message;
+}
+
 
   Future<List<Slot>> getSlotInfo(String date,int duration, List<String> faculty,String? token) async {
     print("get slots");
@@ -119,8 +140,8 @@ class HttpService {
   }
   Future<eventDetails> getDetails(String? event_id, String? occur_id, String? token,String? id) async {
     //print("event functino");
-    String filename = "$id.json";
-    File file = File('${dir.path}/$filename');
+    // String filename = "$id.json";
+    // File file = File('${dir.path}/$filename');
    /* if(file.existsSync()){
       //print("loading from cache");
       var jsondata = file.readAsStringSync();
@@ -137,7 +158,8 @@ class HttpService {
       print("loading form api");
       String url = "$eventUrl?eventID=$event_id&occurenceID=$occur_id";
       Response res = await get(Uri.parse(url),headers: {"accesstoken": "$token"});
-      file.writeAsString(jsonEncode(res.body),flush: true, mode: FileMode.write);
+      // file.writeAsString(jsonEncode(res.body),flush: true, mode: FileMode.write);
+      print(res.body);
       if(res.statusCode == 200) {
         dynamic body = jsonDecode(res.body);
         eventDetails event = eventDetails.fromJson(body);

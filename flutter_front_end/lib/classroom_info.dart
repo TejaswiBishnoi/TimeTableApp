@@ -3,12 +3,13 @@ import 'package:flutter_front_end/class_model.dart';
 import 'package:flutter_front_end/post_model.dart';
 import 'http_model.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'event_desc.dart';
+
 
 class ClassInfo extends StatefulWidget {
   const ClassInfo({Key? key, required this.classNo, required this.date}) : super(key: key);
   final String date;
   final String classNo;
-
   @override
   State<ClassInfo> createState() => _ClassInfoState(date: date, classNo: classNo);
 }
@@ -19,7 +20,7 @@ class _ClassInfoState extends State<ClassInfo> {
   String? token;
   String date;
   String classNo;
-
+  final scenery = {'Monday': 'scenery.jpeg','Tuesday': 'scenery2.jpeg','Wednesday': 'scenery3.jpeg','Thursday': 'scenery4.jpeg','Friday': 'scenery5.jpeg','Saturday': 'scenery6.jpeg','Sunday': 'scenery7.jpeg'};
   _ClassInfoState({required this.date,required this.classNo});
 
   Future getToken() async {
@@ -72,25 +73,45 @@ class _ClassInfoState extends State<ClassInfo> {
                       automaticallyImplyLeading: false,
                       pinned: true,
                       expandedHeight: 130.0,
-                      flexibleSpace: FlexibleSpaceBar(
-                          title: Text("${day.day}\n${day.date}", textScaleFactor: 0.8,)
+
+                      flexibleSpace: Stack(
+                        children: <Widget>[
+
+                          // Positioned.fill(
+                          //   child: Image.asset(
+                          //     'assets/${scenery[day.day]}',
+                          //     fit: BoxFit.cover,
+                          //   ),
+                          // ),
+                          FlexibleSpaceBar(
+                              title: Text("${day.day}\n${day.date}", textScaleFactor: 1,),
+                          ),
+                  ]
                       ),
                     ),
+
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                           (context,index) {
                             return SizedBox(
                               height: 100,
-                              child: Card(
-                                child: Row(
-                                  children: [
-                                    const SizedBox(width: 20,),
-                                    Text(day.event_list![index].start_time),
-                                    const SizedBox(width: 20,),
-                                    Text(day.event_list![index].end_time),
-                                    const SizedBox(width: 20,),
-                                    Expanded(child: Text(day.event_list![index].faculty,))
-                                  ],
+                              child: InkWell(
+                                onTap: (){
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>  EventDetails(title: day.event_list![index].course_name,occur_id: day.event_list![index].occur_id, event_id: day.event_list![index].event_id,token: token,id: day.event_list![index].event_id,httpService: httpService,),
+                                  ));
+                                },
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      const SizedBox(width: 20,),
+                                      Text(day.event_list![index].start_time),
+                                      const SizedBox(width: 20,),
+                                      Text(day.event_list![index].end_time),
+                                      const SizedBox(width: 20,),
+                                      Expanded(child: Text(day.event_list![index].faculty,))
+                                    ],
+                                  ),
                                 ),
                               ),
                             );

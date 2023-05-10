@@ -10,20 +10,23 @@ class EventDetails extends StatefulWidget {
   final String? event_id;
   final String? token;
   final HttpService httpService;
-  const EventDetails({Key? key,required this.occur_id, required this.event_id, required this.token, required this.id, required this.httpService}) : super(key: key);
+  final String? title;
+  const EventDetails({Key? key,required this.title,required this.occur_id, required this.event_id, required this.token, required this.id, required this.httpService}) : super(key: key);
+
 
   @override
-  State<EventDetails> createState() => _EventDetailsState(event_id: event_id,occur_id: occur_id,token: token, id: id,httpService: httpService);
+  State<EventDetails> createState() => _EventDetailsState(title: title,event_id: event_id,occur_id: occur_id,token: token, id: id,httpService: httpService);
 }
 
 class _EventDetailsState extends State<EventDetails> {
   @override
+  final String? title;
   final String? id;
   final String? event_id;
   final String? occur_id;
   final String? token;
   final HttpService httpService;
-  _EventDetailsState({required this.event_id,required this.occur_id,required this.token, required this.id, required this.httpService});
+  _EventDetailsState({required this.title,required this.event_id,required this.occur_id,required this.token, required this.id, required this.httpService});
   //final HttpService httpService = HttpService();
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,6 +61,16 @@ class _EventDetailsState extends State<EventDetails> {
             eventDetails event = snapshot.data;
             return ListView(
               children: [
+                ListTile(
+                  title: Row(
+                    children: [
+                      SizedBox(width: 30,),
+                      Text("Course Name :"),
+                      SizedBox(width: 50.0,),
+                      Expanded(child: Text(title!)),
+                    ],
+                  ),
+                ),
                 ListTile(
                 title: Row(
                   children: [
