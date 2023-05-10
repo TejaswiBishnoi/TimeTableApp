@@ -19,6 +19,8 @@ namespace TestServer
         public ICollection<Instructor_Of> instrucor_of { get; set; }
         public ICollection<Teaches> teaches { get; set; }
         public ICollection<Event> events { get; set; }
+        public Calendar calendar { get; set; }
+        public GoogleMiddleToken googletoken { get; set; }
     }
     public class Course
     {
@@ -98,5 +100,21 @@ namespace TestServer
         public string type { get; set; }
         public int capacity { get; set; }
         public ICollection<Occurence> occurences { get; set; }
+    }
+
+    public class Calendar
+    {
+        public string instructor_id { get; set; }
+        public Instructor instructor { get; set; }
+        public string calName { get; set; }
+        public string accessToken { get; set; }
+        public string refreshToken { get; set; }        
+    }
+
+    public class GoogleMiddleToken
+    {
+        public string token { get; set; }
+        public string instructor_id { get; set; }
+        public Instructor instructor { get; set;}
     }
 }

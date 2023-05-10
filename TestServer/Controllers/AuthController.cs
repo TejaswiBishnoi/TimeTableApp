@@ -22,7 +22,8 @@ namespace TestServer.Controllers
         [HttpGet("Fraud")]
         public IActionResult GetFraudToken()
         {
-            string Token = CreateToken(new InstructorDTO("IITJMU000", "Shrey", "sshrey183@gmail.com"));
+            //string Token = CreateToken(new InstructorDTO("IITJMU000", "Shrey", "sshrey183@gmail.com"));
+            string Token = CreateToken(new InstructorDTO("IITJMU11059", "Subhasis Bhattacharjee", "IITJMU11059@iitjammu.ac.in"));
             return Ok(Token);
         }
 

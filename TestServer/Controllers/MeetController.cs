@@ -30,7 +30,7 @@ namespace TestServer.Controllers
                 {
                     return -1;
                 }
-                return 0;
+                return 1;
             });
             if (list.Count == 0) return new List<MeetInternal> { new MeetInternal(new TimeSpan(9,0,0), new TimeSpan(18, 0, 0)) };
             List<MeetInternal> listUpdated = new()
@@ -56,6 +56,7 @@ namespace TestServer.Controllers
                 result.Add(new MeetInternal(new TimeSpan(9, 0, 0), new TimeSpan(18, 0, 0)));
                 return result;
             }
+            
             TimeSpan refs = new TimeSpan(9, 0, 0);
             TimeSpan refe = new TimeSpan(18, 0, 0);
             TimeSpan start = new TimeSpan(9, 0, 0);
@@ -92,7 +93,8 @@ namespace TestServer.Controllers
             if (start < refe && refe - start >= duration) result.Add(new MeetInternal(start, refe));  
             return result;
         }
-        public MeetController(MyContext context)
+        public MeetController(
+            )
         {
             this.context = context;
         }
