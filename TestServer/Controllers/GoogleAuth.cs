@@ -128,19 +128,19 @@ namespace TestServer.Controllers
             Calendar? usrCalData = context.Calendar.SingleOrDefault(s => s.instructor_id == id);
             if (usrCalData != null)
             {
-                //var options = new RestClientOptions("https://oauth2.googleapis.com/");                
-                //var client = new RestClient(options);
-                //var req = new RestRequest("/token", Method.Post);
-                //req.AddHeader("content-type", "application/x-www-form-urlencoded");
-                //req.AddParameter("application/x-www-form-urlencoded", $"client_id=355872611957-di0n16scktb12ccurucagoob58c39e8a.apps.googleusercontent.com&client_secret=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&refresh_token={usrCalData.refreshToken}&grant_type=refresh_token");
-                //var resp = client.Execute<refreshResp>(req);
-                //if (!resp.IsSuccessful)
-                //{
-                //    return BadRequest();
-                //}
-                //string accessToken = resp.Data.access_token;
-                //await InsertEvents(accessToken, id, usrCalData.calName);
-                //return Ok("Synced");
+                var options = new RestClientOptions("https://oauth2.googleapis.com/");
+                var client = new RestClient(options);
+                var req = new RestRequest("/token", Method.Post);
+                req.AddHeader("content-type", "application/x-www-form-urlencoded");
+                req.AddParameter("application/x-www-form-urlencoded", $"client_id=355872611957-di0n16scktb12ccurucagoob58c39e8a.apps.googleusercontent.com&client_secret=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&refresh_token={usrCalData.refreshToken}&grant_type=refresh_token", ParameterType.RequestBody);
+                var resp = client.Execute<refreshResp>(req);
+                if (!resp.IsSuccessful)
+                {
+                    return BadRequest();
+                }
+                string accessToken = resp.Data.access_token;
+                await InsertEvents(accessToken, id, usrCalData.calName);
+                return Ok("Synced.");
                 ////context.Calendar.Remove(usrCalData);
                 ////context.SaveChanges();
             }
@@ -169,7 +169,8 @@ namespace TestServer.Controllers
                 {
                     "profile",
                     "https://www.googleapis.com/auth/calendar"
-                },               
+                },
+                Prompt = "consent"
             });
             var oauthObj =  oauthClient.CreateAuthorizationCodeRequest("http://localhost:5143/googleauth/calredir");
             oauthObj.State = midtoken;
@@ -204,7 +205,8 @@ namespace TestServer.Controllers
                 {
                     "profile",
                     "https://www.googleapis.com/auth/calendar"
-                }
+                },
+                Prompt = "consent"
             });
             var token = await oauthClient.ExchangeCodeForTokenAsync("1", code, "http://localhost:5143/googleauth/calredir", CancellationToken.None);            
             var options = new RestClientOptions("https://www.googleapis.com/calendar/v3/")
@@ -215,7 +217,7 @@ namespace TestServer.Controllers
             if (usrCalData != null)
             {
                 await InsertEvents(token.AccessToken, id, usrCalData.calName);
-                return Ok("Synced");
+                return Ok("Synced. Please Close This Window!");
             }
             Google.Apis.Calendar.v3.Data.Calendar newCal = new Google.Apis.Calendar.v3.Data.Calendar()
             {
@@ -239,13 +241,24 @@ namespace TestServer.Controllers
             context.Add<Calendar>(calObj);
             context.SaveChanges();
             await InsertEvents(token.AccessToken, id, newCal.Id);
-            return Ok("Synced");
+            return Ok("Synced. Please Close This Window!");
         }
         [HttpGet("trst")]
         public async Task<IActionResult> Trst()
         {
-            await InsertEvents("ya29.a0AWY7CknX9UmUXZ5DzqvIoL2LOh_QMtftQCTZXvjY3tUg_yX7nWUWn8LgV_QrFxRENaPkwCitwVocnTdj9wGK9hs7ISyhkrypRbnFQ6N1sCzwNHHxcn-dIw_6fFQl1N9EKKnUe0BwXeDPhIsS371WULh2YVB7mQaCgYKATESARMSFQG1tDrpQMIynYQnVo64Tv63qtM26w0165",
-                "IITJMU11059", "9j1ieap8d7s7cop86o9cujlvr8@group.calendar.google.com");
+            var options = new RestClientOptions("https://oauth2.googleapis.com/");
+            var client = new RestClient(options);
+            var req = new RestRequest("/token", Method.Post);
+            req.AddHeader("content-type", "application/x-www-form-urlencoded");
+            var reftoken = "1//0gLGkRpxG9_y_CgYIARAAGBASNwF-L9IrwcDB_hWclY-GnJaOFWqZYEBKSNFAJkYGRl4hgtR_G9OJVJ0Z0DwOhiA4d96X5cyi2IQ";
+            req.AddParameter("application/x-www-form-urlencoded", $"client_id=355872611957-di0n16scktb12ccurucagoob58c39e8a.apps.googleusercontent.com&client_secret=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&refresh_token={reftoken}&grant_type=refresh_token", ParameterType.RequestBody);
+            var resp = client.Execute<refreshResp>(req);
+            if (!resp.IsSuccessful)
+            {
+                return BadRequest();
+            }
+            string accessToken = resp.Data.access_token;
+            await InsertEvents(accessToken, "IITJMU11059", "9j1ieap8d7s7cop86o9cujlvr8@group.calendar.google.com");
             return Ok();
         }
     }
